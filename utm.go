@@ -1,4 +1,4 @@
-package utm
+package UTM
 import (
 	"math"
 	"unicode"
