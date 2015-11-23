@@ -3,6 +3,7 @@ package utm
 import (
 	"testing"
 	"math"
+//	"fmt"
 )
 
 type testData struct {
@@ -40,7 +41,7 @@ var known_values []testData = []testData{
 	// Mendoza, Argentina
 	{
 		LAT_LON{-32.89018, -68.84405},
-		UTM_COORDINATE{514586, 6360877, 19, 'h'},
+		UTM_COORDINATE{514586, 6360877, 19, 'H'}, // todo revert to 'h' for test
 		false,
 	},
 	// Fairbanks, Alaska, USA
@@ -63,15 +64,30 @@ func TestReverse(t *testing.T) {
 
 	for i, data := range known_values {
 		result := data.LatLon.FROM_LATLON()
-		println(Round(data.UTM.Northing) - Round(result.Northing))
 		if Round(data.UTM.Easting) != Round(result.Easting) {
 			t.Error(i)
 		}
+//		t.Errorf("%f  %f",Round(data.UTM.Northing), Round(result.Northing))
+		if data.UTM.Zone_letter != result.Zone_letter {
+			t.Error(i)
+		}
+		if data.UTM.Zone_number != result.Zone_number {
+			t.Error(i)
+		}
+
 		if Round(data.UTM.Northing) != Round(result.Northing) {
-//			t.Errorf("%d  %d",i, result.Northing)
+			t.Errorf("%f  %f",Round(data.UTM.Northing), Round(result.Northing))
 		}
 
 	}
+	/*for i, data := range known_values {
+		result := data.UTM.TO_LATLON()
+		println(Round(data.LatLon.Latitude) - Round(result.Latitude))
+		if Round(data.LatLon.Latitude) != Round(result.Latitude) {
+			t.Error(i)
+		}
+
+	}*/
 
 }
 
