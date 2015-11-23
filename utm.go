@@ -10,7 +10,7 @@ const (
 	r = 6378137
 )
 
-var e2 = e + e
+var e2 = e * e
 var e3 = e2 * e
 var e_p2 = e / (1.0 - e)
 
@@ -37,6 +37,10 @@ type zone_letter struct {
 	zone   int
 	letter rune
 }
+
+const x = math.Pi / 180;
+func Rad(d float64) float64 {return d * x};
+func Deg(r float64) float64 {return r / x}
 
 var zone_letters []zone_letter = []zone_letter{
 	{84, ' '},
@@ -159,13 +163,6 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
 
 }
 
-const x = math.Pi / 180;
-func Rad(d float64) float64 {return d * x};
-func Deg(r float64) float64 {return r / x}
-
-
-
-
 func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		panic("latitude out of range (must be between 80 deg S and 84 deg N)")
@@ -205,16 +202,13 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
 	a4 := a3 * a
 	a5 := a4 * a
 	a6 := a5 * a
-
 	m := r * (m1 * lat_rad -
 	m2 * math.Sin(2 * lat_rad) +
 	m3 * math.Sin(4 * lat_rad) -
 	m4 * math.Sin(6 * lat_rad))
-
 	easting := k0 * n * (a +
 	a3 / 6 * (1 - lat_tan2 + c) +
 	a5 / 120 * (5 - 18 * lat_tan2 + lat_tan4 + 72 * c - 58 * e_p2)) + 500000
-
 	northing := k0 * (m + n * lat_tan * (a2 / 2 +
 	a4 / 24 * (5 - lat_tan2 + 9 * c + 4 * c * c) +
 	a6 / 720 * (61 - 58 * lat_tan2 + lat_tan4 + 600 * c - 330 * e_p2)))
