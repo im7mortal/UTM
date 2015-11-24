@@ -39,8 +39,8 @@ type zone_letter struct {
 }
 
 const x = math.Pi / 180;
-func Rad(d float64) float64 {return d * x};
-func Deg(r float64) float64 {return r / x}
+func rad(d float64) float64 {return d * x};
+func deg(r float64) float64 {return r / x}
 
 var zone_letters []zone_letter = []zone_letter{
 	{84, ' '},
@@ -159,7 +159,7 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
 	d3 / 6 * (1 + 2 * p_tan2 + c) +
 	d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * e_p2 + 24 * p_tan4)) / p_cos
 
-	return LAT_LON{Deg(latitude), Deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}
+	return LAT_LON{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}
 
 }
 
@@ -171,7 +171,7 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
 		panic("northing out of range (must be between 180 deg W and 180 deg E)")
 	}
 
-	lat_rad := Rad(point.Latitude)
+	lat_rad := rad(point.Latitude)
 	lat_sin := math.Sin(lat_rad)
 	lat_cos := math.Cos(lat_rad)
 
@@ -189,9 +189,9 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
 
 	zone_letter := latitude_to_zone_letter(point.Latitude)
 
-	lon_rad := Rad(point.Longitude)
+	lon_rad := rad(point.Longitude)
 	central_lon := zone_number_to_central_longitude(zone_number)
-	central_lon_rad := Rad(float64(central_lon))
+	central_lon_rad := rad(float64(central_lon))
 
 	n := r / math.Sqrt(1 - e * lat_sin * lat_sin)
 	c := e_p2 * lat_cos * lat_cos
