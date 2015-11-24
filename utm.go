@@ -104,7 +104,7 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
 
 
 	coordinate.Zone_letter = unicode.ToUpper(coordinate.Zone_letter)
-	if ('C' <= coordinate.Zone_letter && coordinate.Zone_letter <= 'X') || coordinate.Zone_letter == 'I' || coordinate.Zone_letter == 'O' {
+	if !(('C' <= coordinate.Zone_letter && coordinate.Zone_letter <= 'X') || coordinate.Zone_letter == 'I' || coordinate.Zone_letter == 'O') {
 		panic("zone letter out of range (must be between C and X)")
 	}
 	northern := (coordinate.Zone_letter >= 'N')
