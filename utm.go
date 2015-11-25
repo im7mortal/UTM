@@ -1,4 +1,4 @@
-// Bidirectional UTM-WGS84 converter for golang
+// Package UTM is bidirectional UTM-WGS84 converter for golang
 package UTM
 import (
 	"math"
@@ -44,7 +44,7 @@ const x = math.Pi / 180;
 func rad(d float64) float64 {return d * x};
 func deg(r float64) float64 {return r / x}
 
-var zone_letters []zone_letter = []zone_letter{
+var zone_letters = []zone_letter{
 	{84, ' '},
 	{72, 'X'},
 	{64, 'W'},
@@ -68,8 +68,8 @@ var zone_letters []zone_letter = []zone_letter{
 	{-80, 'C'},
 }
 
-//UTMCoordinate contains coordinates in the Universal Transverse Mercator coordinate system
-type UTMCoordinate struct {
+//Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
+type Coordinate struct {
 	Easting     float64
 	Northing    float64
 	Zone_number int
@@ -86,8 +86,8 @@ type LatLon struct {
 
 
 //ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
-func (coordinate *UTMCoordinate) ToLatLon() (LatLon, error) {
-/*func (coordinate *UTMCoordinate) ToLatLon(northern ...bool) LatLon {
+func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
+/*func (coordinate *Coordinate) ToLatLon(northern ...bool) LatLon {
 	nothernExist := len(northern) > 0;
 	if !(coordinate.Zone_letter && nothernExist) {
 		panic("either coordinate.Zone_letter or northern needs to be set")
@@ -170,14 +170,14 @@ func (coordinate *UTMCoordinate) ToLatLon() (LatLon, error) {
 }
 
 //FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func (point *LatLon) FromLatLon () (UTMCoordinate, error) {
+func (point *LatLon) FromLatLon () (Coordinate, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
-		return UTMCoordinate{}, err
+		return Coordinate{}, err
 	}
 	if !(-180.0 <= point.Longitude && point.Longitude <= 180.0) {
 		err := errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
-		return UTMCoordinate{}, err
+		return Coordinate{}, err
 	}
 
 	lat_rad := rad(point.Latitude)
@@ -221,7 +221,7 @@ func (point *LatLon) FromLatLon () (UTMCoordinate, error) {
 		northing += 10000000
 	}
 
-	return UTMCoordinate {
+	return Coordinate {
 		easting,
 		northing,
 		zone_number,

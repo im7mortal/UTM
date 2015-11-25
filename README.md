@@ -15,16 +15,16 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 ```
 	import "github.com/im7mortal/UTM"
 	latLon := UTM.LatLon{50.77535, 6.08389}
-	utmCoordinate := latLon.FromLatLon()
+	Coordinate := latLon.FromLatLon()
 ```
 The return has the form
-	UTMCoordinate{294409, 5628898, 32, 'U'}
+	Coordinate{294409, 5628898, 32, 'U'}
 
 Convert a (latitude, longitude) tuple into an UTM coordinate
 
 ```
-	latLon := UTMCoordinate{294409, 5628898, 32, 'U'}
-	utmCoordinate := latLon.ToLatLon()
+	latLon := Coordinate{294409, 5628898, 32, 'U'}
+	Coordinate := latLon.ToLatLon()
 ```
 The return has the form
 	LatLon{50.77535, 6.08389}
