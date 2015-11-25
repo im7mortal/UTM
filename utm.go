@@ -1,15 +1,16 @@
 // Package UTM is bidirectional UTM-WGS84 converter for golang
 package UTM
+
 import (
+	"errors"
 	"math"
 	"unicode"
-	"errors"
 )
 
 const (
 	k0 float64 = 0.9996
-	e float64 = 0.00669438
-	r = 6378137
+	e  float64 = 0.00669438
+	r          = 6378137
 )
 
 var e2 = e * e
@@ -18,21 +19,20 @@ var e_p2 = e / (1.0 - e)
 
 var sqrt_e = math.Sqrt(1 - e)
 
-
 var _e = (1 - sqrt_e) / (1 + sqrt_e)
 var _e2 = _e * _e
 var _e3 = _e2 * _e
 var _e4 = _e3 * _e
 var _e5 = _e4 * _e
 
-var m1 = (1 - e / 4 - 3 * e2 / 64 - 5 * e3 / 256)
-var m2 = (3 * e / 8 + 3 * e2 / 32 + 45 * e3 / 1024)
-var m3 = (15 * e2 / 256 + 45 * e3 / 1024)
+var m1 = (1 - e/4 - 3*e2/64 - 5*e3/256)
+var m2 = (3*e/8 + 3*e2/32 + 45*e3/1024)
+var m3 = (15*e2/256 + 45*e3/1024)
 var m4 = (35 * e3 / 3072)
 
-var p2 = (3. / 2 * _e - 27. / 32 * _e3 + 269. / 512 * _e5)
-var p3 = (21. / 16 * _e2 - 55. / 32 * _e4)
-var p4 = (151. / 96 * _e3 - 417. / 128 * _e5)
+var p2 = (3./2*_e - 27./32*_e3 + 269./512*_e5)
+var p3 = (21./16*_e2 - 55./32*_e4)
+var p4 = (151./96*_e3 - 417./128*_e5)
 var p5 = (1097. / 512 * _e4)
 
 type zone_letter struct {
@@ -40,9 +40,10 @@ type zone_letter struct {
 	letter rune
 }
 
-const x = math.Pi / 180;
-func rad(d float64) float64 {return d * x};
-func deg(r float64) float64 {return r / x}
+const x = math.Pi / 180
+
+func rad(d float64) float64 { return d * x }
+func deg(r float64) float64 { return r / x }
 
 var zone_letters = []zone_letter{
 	{84, ' '},
@@ -74,7 +75,7 @@ type Coordinate struct {
 	Northing    float64
 	Zone_number int
 	Zone_letter rune
-//	northern    bool
+	//	northern    bool
 }
 
 //LatLon contains a latitude and longitude
@@ -83,11 +84,9 @@ type LatLon struct {
 	Longitude float64
 }
 
-
-
 //ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
-/*func (coordinate *Coordinate) ToLatLon(northern ...bool) LatLon {
+	/*func (coordinate *Coordinate) ToLatLon(northern ...bool) LatLon {
 	nothernExist := len(northern) > 0;
 	if !(coordinate.Zone_letter && nothernExist) {
 		panic("either coordinate.Zone_letter or northern needs to be set")
@@ -107,7 +106,6 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 		err := errors.New("zone number out of range (must be between 1 and 60)")
 		return LatLon{}, err
 	}
-
 
 	coordinate.Zone_letter = unicode.ToUpper(coordinate.Zone_letter)
 	if !(('C' <= coordinate.Zone_letter && coordinate.Zone_letter <= 'X') || coordinate.Zone_letter == 'I' || coordinate.Zone_letter == 'O') {
@@ -140,8 +138,8 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 	p_tan2 := p_tan * p_tan
 	p_tan4 := p_tan2 * p_tan2
 
-	ep_sin := 1 - e * p_sin2
-	ep_sin_sqrt := math.Sqrt(1 - e * p_sin2)
+	ep_sin := 1 - e*p_sin2
+	ep_sin_sqrt := math.Sqrt(1 - e*p_sin2)
 
 	n := r / ep_sin_sqrt
 	rad := (1 - r) / ep_sin
@@ -170,7 +168,7 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 }
 
 //FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func (point *LatLon) FromLatLon () (Coordinate, error) {
+func (point *LatLon) FromLatLon() (Coordinate, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
 		return Coordinate{}, err
@@ -197,7 +195,7 @@ func (point *LatLon) FromLatLon () (Coordinate, error) {
 	central_lon := zone_number_to_central_longitude(zone_number)
 	central_lon_rad := rad(float64(central_lon))
 
-	n := r / math.Sqrt(1 - e * lat_sin * lat_sin)
+	n := r / math.Sqrt(1-e*lat_sin*lat_sin)
 	c := e_p2 * lat_cos * lat_cos
 
 	a := lat_cos * (lon_rad - central_lon_rad)
@@ -221,16 +219,16 @@ func (point *LatLon) FromLatLon () (Coordinate, error) {
 		northing += 10000000
 	}
 
-	return Coordinate {
+	return Coordinate{
 		easting,
 		northing,
 		zone_number,
 		zone_letter,
-	} , nil
+	}, nil
 }
 
-func latitude_to_zone_letter(latitude float64 ) rune {
-	for _, zone_letter := range zone_letters{
+func latitude_to_zone_letter(latitude float64) rune {
+	for _, zone_letter := range zone_letters {
 		if latitude >= float64(zone_letter.zone) {
 			return zone_letter.letter
 		}
@@ -255,9 +253,9 @@ func latlon_to_zone_number(latitude float64, longitude float64) int {
 		}
 	}
 
-	return int((longitude + 180) / 6) + 1
+	return int((longitude+180)/6) + 1
 }
 
 func zone_number_to_central_longitude(zone_number int) int {
-	return (zone_number - 1) * 6 - 180 + 3
+	return (zone_number-1)*6 - 180 + 3
 }

@@ -1,9 +1,8 @@
 package UTM
 
 import (
-	"testing"
 	"math"
-//	"fmt"
+	"testing"
 )
 
 type testData struct {
@@ -11,7 +10,6 @@ type testData struct {
 	UTM      Coordinate
 	northern bool
 }
-
 
 var knownValues = []testData{
 	// Aachen, Germany
@@ -58,8 +56,6 @@ var knownValues = []testData{
 	},
 }
 
-
-
 func TestTO_LATLON(t *testing.T) {
 	for i, data := range knownValues {
 		result, err := data.UTM.ToLatLon()
@@ -74,7 +70,6 @@ func TestTO_LATLON(t *testing.T) {
 		}
 	}
 }
-
 
 func TestFROM_LATLON(t *testing.T) {
 
