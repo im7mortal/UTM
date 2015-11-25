@@ -68,8 +68,8 @@ var zone_letters []zone_letter = []zone_letter{
 	{-80, 'C'},
 }
 
-//UTM_COORDINATE contains coordinates in the Universal Transverse Mercator coordinate system
-type UTM_COORDINATE struct {
+//UTMCoordinate contains coordinates in the Universal Transverse Mercator coordinate system
+type UTMCoordinate struct {
 	Easting     float64
 	Northing    float64
 	Zone_number int
@@ -77,17 +77,17 @@ type UTM_COORDINATE struct {
 //	northern    bool
 }
 
-//LAT_LON contains a latitude and longitude
-type LAT_LON struct {
+//LatLon contains a latitude and longitude
+type LatLon struct {
 	Latitude  float64
 	Longitude float64
 }
 
 
 
-//TO_LATLON convert Universal Transverse Mercator coordinates to a latitude and longitude
-func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
-/*func (coordinate *UTM_COORDINATE) TO_LATLON(northern ...bool) LAT_LON {
+//ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
+func (coordinate *UTMCoordinate) ToLatLon() (LatLon, error) {
+/*func (coordinate *UTMCoordinate) ToLatLon(northern ...bool) LatLon {
 	nothernExist := len(northern) > 0;
 	if !(coordinate.Zone_letter && nothernExist) {
 		panic("either coordinate.Zone_letter or northern needs to be set")
@@ -97,15 +97,15 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 
 	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
 		err := errors.New("easting out of range (must be between 100.000 m and 999.999 m")
-		return LAT_LON{}, err
+		return LatLon{}, err
 	}
 	if !(0 <= coordinate.Northing && coordinate.Northing <= 10000000) {
 		err := errors.New("northing out of range (must be between 0 m and 10.000.000 m)")
-		return LAT_LON{}, err
+		return LatLon{}, err
 	}
 	if !(1 <= coordinate.Zone_number && coordinate.Zone_number <= 60) {
 		err := errors.New("zone number out of range (must be between 1 and 60)")
-		return LAT_LON{}, err
+		return LatLon{}, err
 	}
 
 
@@ -165,19 +165,19 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 	d3 / 6 * (1 + 2 * p_tan2 + c) +
 	d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * e_p2 + 24 * p_tan4)) / p_cos
 
-	return LAT_LON{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}, nil
+	return LatLon{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}, nil
 
 }
 
-//FROM_LATLON convert a latitude and longitude to Universal Transverse Mercator coordinates
-func (point *LAT_LON) FROM_LATLON () (UTM_COORDINATE, error) {
+//FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+func (point *LatLon) FromLatLon () (UTMCoordinate, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
-		return UTM_COORDINATE{}, err
+		return UTMCoordinate{}, err
 	}
 	if !(-180.0 <= point.Longitude && point.Longitude <= 180.0) {
 		err := errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
-		return UTM_COORDINATE{}, err
+		return UTMCoordinate{}, err
 	}
 
 	lat_rad := rad(point.Latitude)
@@ -221,7 +221,7 @@ func (point *LAT_LON) FROM_LATLON () (UTM_COORDINATE, error) {
 		northing += 10000000
 	}
 
-	return UTM_COORDINATE {
+	return UTMCoordinate {
 		easting,
 		northing,
 		zone_number,

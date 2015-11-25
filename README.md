@@ -14,20 +14,20 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 
 ```
 	import "github.com/im7mortal/UTM"
-	latLon := UTM.LAT_LON{50.77535, 6.08389}
-	utmCoordinate := latLon.FROM_LATLON()
+	latLon := UTM.LatLon{50.77535, 6.08389}
+	utmCoordinate := latLon.FromLatLon()
 ```
 The return has the form
-	UTM_COORDINATE{294409, 5628898, 32, 'U'}
+	UTMCoordinate{294409, 5628898, 32, 'U'}
 
 Convert a (latitude, longitude) tuple into an UTM coordinate
 
 ```
-	latLon := UTM_COORDINATE{294409, 5628898, 32, 'U'}
-	utmCoordinate := latLon.TO_LATLON()
+	latLon := UTMCoordinate{294409, 5628898, 32, 'U'}
+	utmCoordinate := latLon.ToLatLon()
 ```
 The return has the form
-	LAT_LON{50.77535, 6.08389}
+	LatLon{50.77535, 6.08389}
 	
 	
 Not implemented yet
