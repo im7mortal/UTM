@@ -2,6 +2,7 @@ package UTM
 import (
 	"math"
 	"unicode"
+	"errors"
 )
 
 const (
@@ -83,7 +84,7 @@ type LAT_LON struct {
 
 
 
-func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
+func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 /*func (coordinate *UTM_COORDINATE) TO_LATLON(northern ...bool) LAT_LON {
 	nothernExist := len(northern) > 0;
 	if !(coordinate.Zone_letter && nothernExist) {
@@ -94,6 +95,8 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
 
 	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
 		panic("easting out of range (must be between 100.000 m and 999.999 m")
+		err := errors.New("easting out of range (must be between 100.000 m and 999.999 m")
+		return LAT_LON{0, 0}, err
 	}
 	if !(0 <= coordinate.Northing && coordinate.Northing <= 10000000) {
 		panic("northing out of range (must be between 0 m and 10.000.000 m)")
@@ -159,7 +162,7 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() LAT_LON {
 	d3 / 6 * (1 + 2 * p_tan2 + c) +
 	d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * e_p2 + 24 * p_tan4)) / p_cos
 
-	return LAT_LON{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}
+	return LAT_LON{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}, nil
 
 }
 
