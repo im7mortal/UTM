@@ -94,15 +94,16 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 	}*/
 
 	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
-		panic("easting out of range (must be between 100.000 m and 999.999 m")
 		err := errors.New("easting out of range (must be between 100.000 m and 999.999 m")
-		return LAT_LON{0, 0}, err
+		return LAT_LON{}, err
 	}
 	if !(0 <= coordinate.Northing && coordinate.Northing <= 10000000) {
-		panic("northing out of range (must be between 0 m and 10.000.000 m)")
+		err := errors.New("northing out of range (must be between 0 m and 10.000.000 m)")
+		return LAT_LON{}, err
 	}
 	if !(1 <= coordinate.Zone_number && coordinate.Zone_number <= 60) {
-		panic("zone number out of range (must be between 1 and 60)")
+		err := errors.New("zone number out of range (must be between 1 and 60)")
+		return LAT_LON{}, err
 	}
 
 
@@ -166,12 +167,14 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 
 }
 
-func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
+func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) (UTM_COORDINATE, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
-		panic("latitude out of range (must be between 80 deg S and 84 deg N)")
+		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
+		return UTM_COORDINATE{}, err
 	}
 	if !(-180.0 <= point.Longitude && point.Longitude <= 180.0) {
-		panic("northing out of range (must be between 180 deg W and 180 deg E)")
+		err := errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
+		return UTM_COORDINATE{}, err
 	}
 
 	lat_rad := rad(point.Latitude)
@@ -225,7 +228,7 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) UTM_COORDINATE {
 		northing,
 		zone_number,
 		zone_letter,
-	}
+	} , nil
 }
 
 

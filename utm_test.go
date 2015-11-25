@@ -60,38 +60,43 @@ var known_values []testData = []testData{
 
 
 
-func TestReverse(t *testing.T) {
-
+func TestTO_LATLON(t *testing.T) {
 	for i, data := range known_values {
-		result := data.LatLon.FROM_LATLON()
-		if Round(data.UTM.Easting) != Round(result.Easting) {
-			t.Error(i)
+		result, err := data.UTM.TO_LATLON()
+		if err != nil {
+			t.Fatal(err.Error())
 		}
-//		t.Errorf("%f  %f",Round(data.UTM.Northing), Round(result.Northing))
-		if data.UTM.Zone_letter != result.Zone_letter {
-			t.Error(i)
-		}
-		if data.UTM.Zone_number != result.Zone_number {
-			t.Error(i)
-		}
-
-		if Round(data.UTM.Northing) != Round(result.Northing) {
-			t.Errorf("%f  %f",Round(data.UTM.Northing), Round(result.Northing))
-		}
-
-	}
-	/*for i, data := range known_values {
-		result := data.UTM.TO_LATLON()
-		println(Round(data.LatLon.Latitude) - Round(result.Latitude))
 		if Round(data.LatLon.Latitude) != Round(result.Latitude) {
-			t.Error(i)
+			t.Errorf("Latitude TO_LATLON case %d", i)
 		}
-
-	}*/
-
+		if Round(data.LatLon.Longitude) != Round(result.Longitude) {
+			t.Errorf("Longitude TO_LATLON case %d", i)
+		}
+	}
 }
 
 
+func TestFROM_LATLON(t *testing.T) {
+
+	for i, data := range known_values {
+		result, err := data.LatLon.FROM_LATLON()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		if Round(data.UTM.Easting) != Round(result.Easting) {
+			t.Errorf("Easting FROM_LATLON case %d", i)
+		}
+		if Round(data.UTM.Northing) != Round(result.Northing) {
+			t.Errorf("Northing FROM_LATLON case %d", i)
+		}
+		if data.UTM.Zone_letter != result.Zone_letter {
+			t.Errorf("Zone_letter FROM_LATLON case %d", i)
+		}
+		if data.UTM.Zone_number != result.Zone_number {
+			t.Errorf("Zone_number FROM_LATLON case %d", i)
+		}
+	}
+}
 
 func Round(f float64) float64 {
 	return math.Floor(f + .5)
