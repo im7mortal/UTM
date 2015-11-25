@@ -18,6 +18,7 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 	Coordinate := latLon.FromLatLon()
 ```
 The return has the form
+
 	Coordinate{294409, 5628898, 32, 'U'}
 
 Convert a (latitude, longitude) tuple into an UTM coordinate
@@ -27,6 +28,7 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 	latLon := coordinate.ToLatLon()
 ```
 The return has the form
+
 	LatLon{50.77535, 6.08389}
 	
 	
