@@ -1,4 +1,4 @@
-// Bidirectional UTM-WGS84 converter for python
+// Bidirectional UTM-WGS84 converter for golang
 package UTM
 import (
 	"math"
