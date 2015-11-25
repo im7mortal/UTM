@@ -1,7 +1,6 @@
 package UTM
 
 import (
-	"math"
 	"testing"
 )
 
@@ -62,10 +61,10 @@ func TestTO_LATLON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		if Round(data.LatLon.Latitude) != Round(result.Latitude) {
+		if round(data.LatLon.Latitude) != round(result.Latitude) {
 			t.Errorf("Latitude TO_LATLON case %d", i)
 		}
-		if Round(data.LatLon.Longitude) != Round(result.Longitude) {
+		if round(data.LatLon.Longitude) != round(result.Longitude) {
 			t.Errorf("Longitude TO_LATLON case %d", i)
 		}
 	}
@@ -78,10 +77,10 @@ func TestFROM_LATLON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		if Round(data.UTM.Easting) != Round(result.Easting) {
+		if data.UTM.Easting != result.Easting {
 			t.Errorf("Easting FROM_LATLON case %d", i)
 		}
-		if Round(data.UTM.Northing) != Round(result.Northing) {
+		if data.UTM.Northing != result.Northing {
 			t.Errorf("Northing FROM_LATLON case %d", i)
 		}
 		if data.UTM.Zone_letter != result.Zone_letter {
@@ -91,8 +90,4 @@ func TestFROM_LATLON(t *testing.T) {
 			t.Errorf("Zone_number FROM_LATLON case %d", i)
 		}
 	}
-}
-
-func Round(f float64) float64 {
-	return math.Floor(f + .5)
 }

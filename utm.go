@@ -44,7 +44,7 @@ const x = math.Pi / 180
 
 func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
-
+func round(f float64) float64 { return math.Floor(f + .5) }
 var zone_letters = []zone_letter{
 	{84, ' '},
 	{72, 'X'},
@@ -71,8 +71,8 @@ var zone_letters = []zone_letter{
 
 //Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
 type Coordinate struct {
-	Easting     float64
-	Northing    float64
+	Easting     int
+	Northing    int
 	Zone_number int
 	Zone_letter rune
 	//	northern    bool
@@ -113,8 +113,8 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 	}
 	northern := (coordinate.Zone_letter >= 'N')
 
-	x := coordinate.Easting - 500000
-	y := coordinate.Northing
+	x := float64(coordinate.Easting) - 500000
+	y := float64(coordinate.Northing)
 
 	if !northern {
 		y -= 10000000
@@ -220,8 +220,8 @@ func (point *LatLon) FromLatLon() (Coordinate, error) {
 	}
 
 	return Coordinate{
-		easting,
-		northing,
+		int(round(easting)),
+		int(round(northing)),
 		zone_number,
 		zone_letter,
 	}, nil
