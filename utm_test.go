@@ -13,7 +13,7 @@ type testData struct {
 }
 
 
-var known_values []testData = []testData{
+var knownValues = []testData{
 	// Aachen, Germany
 	{
 		LatLon{50.77535, 6.08389},
@@ -61,7 +61,7 @@ var known_values []testData = []testData{
 
 
 func TestTO_LATLON(t *testing.T) {
-	for i, data := range known_values {
+	for i, data := range knownValues {
 		result, err := data.UTM.ToLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
@@ -78,7 +78,7 @@ func TestTO_LATLON(t *testing.T) {
 
 func TestFROM_LATLON(t *testing.T) {
 
-	for i, data := range known_values {
+	for i, data := range knownValues {
 		result, err := data.LatLon.FromLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
