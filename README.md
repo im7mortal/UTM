@@ -1,21 +1,21 @@
 utm
 ===
 
-.. image:: https://travis-ci.org/Turbo87/utm.png
-
-Bidirectional UTM-WGS84 converter for python
+Bidirectional UTM-WGS84 converter for golang
 
 Usage
 -----
 
-::
+	> go get github.com/im7mortal/UTM
 
-  import utm
+Convert a (latitude, longitude) tuple into an UTM coordinate
 
-Convert a (latitude, longitude) tuple into an UTM coordinate::
-
-  utm.from_latlon(51.2, 7.5)
-  >>> (395201.3103811303, 5673135.241182375, 32, 'U')
+```
+	import "github.com/im7mortal/UTM"
+	latLon := UTM.LAT_LON{50.77535, 6.08389}
+	utmCoordinate := latLon.FROM_LATLON()
+```
+  > UTM_COORDINATE{294409, 5628898, 32, 'U'}
 
 The syntax is **utm.from_latlon(LATITUDE, LONGITUDE)**.
 
@@ -56,25 +56,7 @@ Create a new ``virtualenv`` and install the library via ``pip install -e .``.
 After that install the ``pytest`` package via ``pip install pytest`` and run
 the unit test suite by calling ``py.test``.
 
-Changelog
----------
-
-see `CHANGELOG.rst <CHANGELOG.rst>`_ file
-
 Authors
 -------
 
-* Bart van Andel <bavanandel@gmail.com>
-* Tobias Bieniek <Tobias.Bieniek@gmx.de>
-* Torstein I. Bø
-
-License
--------
-
-Copyright (C) 2012 Tobias Bieniek <Tobias.Bieniek@gmx.de>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+* Petr Lozhkin <im7mortal@gmail.com>
