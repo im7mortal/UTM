@@ -38,8 +38,8 @@ to either ``True`` or ``False``. Have a look at the unit tests to see how it
 can be used.
 
 The UTM coordinate system is explained on
-`this <https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system>`_
-Wikipedia page.
+
+[Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
 
 Speed
 -----
