@@ -170,7 +170,7 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 }
 
 //FROM_LATLON convert a latitude and longitude to Universal Transverse Mercator coordinates
-func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) (UTM_COORDINATE, error) {
+func (point *LAT_LON) FROM_LATLON () (UTM_COORDINATE, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
 		return UTM_COORDINATE{}, err
@@ -189,12 +189,7 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) (UTM_COORDINATE, er
 	lat_tan4 := lat_tan2 * lat_tan2
 	var zone_number int
 
-	if len(force_zone_number) > 0 {
-		zone_number = force_zone_number[0]
-	} else {
-		zone_number = latlon_to_zone_number(point.Latitude, point.Longitude)
-	}
-
+	zone_number = latlon_to_zone_number(point.Latitude, point.Longitude)
 
 	zone_letter := latitude_to_zone_letter(point.Latitude)
 
