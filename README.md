@@ -1,6 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/im7mortal/UTM?status.svg)](https://godoc.org/github.com/im7mortal/UTM)
 
-utm
+UTM
 ===
 
 Bidirectional UTM-WGS84 converter for golang
@@ -8,7 +8,7 @@ Bidirectional UTM-WGS84 converter for golang
 Usage
 -----
 
-	> go get github.com/im7mortal/UTM
+	go get github.com/im7mortal/UTM
 
 Convert a (latitude, longitude) tuple into an UTM coordinate
 
@@ -17,7 +17,7 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 	latLon := UTM.LAT_LON{50.77535, 6.08389}
 	utmCoordinate := latLon.FROM_LATLON()
 ```
-  > UTM_COORDINATE{294409, 5628898, 32, 'U'}
+	UTM_COORDINATE{294409, 5628898, 32, 'U'}
 
 The syntax is **utm.from_latlon(LATITUDE, LONGITUDE)**.
 
