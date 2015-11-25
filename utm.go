@@ -1,3 +1,4 @@
+// Bidirectional UTM-WGS84 converter for python
 package UTM
 import (
 	"math"
@@ -67,7 +68,7 @@ var zone_letters []zone_letter = []zone_letter{
 	{-80, 'C'},
 }
 
-
+//UTM_COORDINATE contains coordinates in the Universal Transverse Mercator coordinate system
 type UTM_COORDINATE struct {
 	Easting     float64
 	Northing    float64
@@ -76,6 +77,7 @@ type UTM_COORDINATE struct {
 //	northern    bool
 }
 
+//LAT_LON contains a latitude and longitude
 type LAT_LON struct {
 	Latitude  float64
 	Longitude float64
@@ -83,7 +85,7 @@ type LAT_LON struct {
 
 
 
-
+//TO_LATLON convert Universal Transverse Mercator coordinates to a latitude and longitude
 func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 /*func (coordinate *UTM_COORDINATE) TO_LATLON(northern ...bool) LAT_LON {
 	nothernExist := len(northern) > 0;
@@ -167,6 +169,7 @@ func (coordinate *UTM_COORDINATE) TO_LATLON() (LAT_LON, error) {
 
 }
 
+//FROM_LATLON convert a latitude and longitude to Universal Transverse Mercator coordinates
 func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) (UTM_COORDINATE, error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
@@ -231,12 +234,6 @@ func (point *LAT_LON) FROM_LATLON (force_zone_number ...int) (UTM_COORDINATE, er
 	} , nil
 }
 
-
-
-
-
-
-
 func latitude_to_zone_letter(latitude float64 ) rune {
 	for _, zone_letter := range zone_letters{
 		if latitude >= float64(zone_letter.zone) {
@@ -245,8 +242,6 @@ func latitude_to_zone_letter(latitude float64 ) rune {
 	}
 	return ' '
 }
-
-
 
 func latlon_to_zone_number(latitude float64, longitude float64) int {
 	if 56 <= latitude && latitude <= 64 && 3 <= longitude && longitude <= 12 {
