@@ -86,7 +86,7 @@ type LatLon struct {
 //ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 //Since the zone letter is not strictly needed for the conversion you may also
 // the ``northern`` parameter instead, which is a named parameter and can be set
-// to either ``True`` or ``False``. In this case you should define fields clearly
+// to either true or false. In this case you should define fields clearly
 // You can't set Zone_letter or northern both.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
