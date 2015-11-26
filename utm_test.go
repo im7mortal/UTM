@@ -14,43 +14,43 @@ var knownValues = []testData{
 	// Aachen, Germany
 	{
 		LatLon{50.77535, 6.08389},
-		Coordinate{294409, 5628898, 32, 'U'},
+		Coordinate{294409, 5628898, 32, "U"},
 		true,
 	},
 	// New York, USA
 	{
 		LatLon{40.71435, -74.00597},
-		Coordinate{583960, 4507523, 18, 'T'},
+		Coordinate{583960, 4507523, 18, "T"},
 		true,
 	},
 	// Wellington, New Zealand
 	{
 		LatLon{-41.28646, 174.77624},
-		Coordinate{313784, 5427057, 60, 'G'},
+		Coordinate{313784, 5427057, 60, "G"},
 		false,
 	},
 	// Capetown, South Africa
 	{
 		LatLon{-33.92487, 18.42406},
-		Coordinate{261878, 6243186, 34, 'H'},
+		Coordinate{261878, 6243186, 34, "H"},
 		false,
 	},
 	// Mendoza, Argentina
 	{
 		LatLon{-32.89018, -68.84405},
-		Coordinate{514586, 6360877, 19, 'H'}, // todo revert to 'h' for test
+		Coordinate{514586, 6360877, 19, "H"}, // todo revert to "h" for test
 		false,
 	},
 	// Fairbanks, Alaska, USA
 	{
 		LatLon{64.83778, -147.71639},
-		Coordinate{466013, 7190568, 6, 'W'},
+		Coordinate{466013, 7190568, 6, "W"},
 		true,
 	},
 	// Ben Nevis, Scotland, UK
 	{
 		LatLon{56.79680, -5.00601},
-		Coordinate{377486, 6296562, 30, 'V'},
+		Coordinate{377486, 6296562, 30, "V"},
 		true,
 	},
 }

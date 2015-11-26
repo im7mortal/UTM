@@ -19,12 +19,12 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 ```
 The return has the form
 
-	Coordinate{294409, 5628898, 32, 'U'}
+	Coordinate{294409, 5628898, 32, "U"}
 
 Convert a (latitude, longitude) tuple into an UTM coordinate
 
 ```
-	coordinate := UTM.Coordinate{294409, 5628898, 32, 'U'}
+	coordinate := UTM.Coordinate{294409, 5628898, 32, "U"}
 	latLon := coordinate.ToLatLon()
 ```
 The return has the form

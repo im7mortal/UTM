@@ -4,7 +4,7 @@ package UTM
 import (
 	"errors"
 	"math"
-	"unicode"
+	"strings"
 )
 
 const (
@@ -37,7 +37,7 @@ var p5 = (1097. / 512 * _e4)
 
 type zone_letter struct {
 	zone   int
-	letter rune
+	letter string
 }
 
 const x = math.Pi / 180
@@ -46,27 +46,27 @@ func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
 func round(f float64) float64 { return math.Floor(f + .5) }
 var zone_letters = []zone_letter{
-	{84, ' '},
-	{72, 'X'},
-	{64, 'W'},
-	{56, 'V'},
-	{48, 'U'},
-	{40, 'T'},
-	{32, 'S'},
-	{24, 'R'},
-	{16, 'Q'},
-	{8, 'P'},
-	{0, 'N'},
-	{-8, 'M'},
-	{-16, 'L'},
-	{-24, 'K'},
-	{-32, 'J'},
-	{-40, 'H'},
-	{-48, 'G'},
-	{-56, 'F'},
-	{-64, 'E'},
-	{-72, 'D'},
-	{-80, 'C'},
+	{84, " "},
+	{72, "X"},
+	{64, "W"},
+	{56, "V"},
+	{48, "U"},
+	{40, "T"},
+	{32, "S"},
+	{24, "R"},
+	{16, "Q"},
+	{8, "P"},
+	{0, "N"},
+	{-8, "M"},
+	{-16, "L"},
+	{-24, "K"},
+	{-32, "J"},
+	{-40, "H"},
+	{-48, "G"},
+	{-56, "F"},
+	{-64, "E"},
+	{-72, "D"},
+	{-80, "C"},
 }
 
 //Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
@@ -74,8 +74,7 @@ type Coordinate struct {
 	Easting     int
 	Northing    int
 	Zone_number int
-	Zone_letter rune
-	//	northern    bool
+	Zone_letter string
 }
 
 //LatLon contains a latitude and longitude
@@ -107,11 +106,11 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 		return LatLon{}, err
 	}
 
-	coordinate.Zone_letter = unicode.ToUpper(coordinate.Zone_letter)
-	if !(('C' <= coordinate.Zone_letter && coordinate.Zone_letter <= 'X') || coordinate.Zone_letter == 'I' || coordinate.Zone_letter == 'O') {
+	coordinate.Zone_letter = strings.ToUpper(coordinate.Zone_letter)
+	if !(("C" <= coordinate.Zone_letter && coordinate.Zone_letter <= "X") || coordinate.Zone_letter == "I" || coordinate.Zone_letter == "O") {
 		panic("zone letter out of range (must be between C and X)")
 	}
-	northern := (coordinate.Zone_letter >= 'N')
+	northern := (coordinate.Zone_letter >= "N")
 
 	x := float64(coordinate.Easting) - 500000
 	y := float64(coordinate.Northing)
@@ -227,13 +226,13 @@ func (point *LatLon) FromLatLon() (Coordinate, error) {
 	}, nil
 }
 
-func latitude_to_zone_letter(latitude float64) rune {
+func latitude_to_zone_letter(latitude float64) string {
 	for _, zone_letter := range zone_letters {
 		if latitude >= float64(zone_letter.zone) {
 			return zone_letter.letter
 		}
 	}
-	return ' '
+	return " "
 }
 
 func latlon_to_zone_number(latitude float64, longitude float64) int {
