@@ -156,7 +156,9 @@ var badInputToLatLon = []UTM.Coordinate{
 	UTM.Coordinate{377486, 6296562, 30, "Y"},
 	UTM.Coordinate{377486, 6296562, 30, "B"},
 	UTM.Coordinate{377486, 6296562, 30, "I"},
+	UTM.Coordinate{377486, 6296562, 30, "i"},
 	UTM.Coordinate{377486, 6296562, 30, "O"},
+	UTM.Coordinate{377486, 6296562, 30, "o"},
 	// out of range ZoneNumber
 	UTM.Coordinate{377486, 6296562, 0, "V"},
 	UTM.Coordinate{377486, 6296562, 61, "V"},
@@ -189,7 +191,10 @@ func TestToLatLonBadInput(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expected error. too many arguments")
 	}
-	letters := []string{"X", "W", "V", "U", "T", "S", "R", "Q", "P", "N", "M", "L", "K", "J", "H", "G", "F", "E", "D", "C"}
+	letters := []string{
+		"X", "W", "V", "U", "T", "S", "R", "Q", "P", "N", "M", "L", "K", "J", "H", "G", "F", "E", "D", "C",
+		"x", "w", "v", "u", "t", "s", "r", "q", "p", "n", "m", "l", "k", "j", "h", "g", "f", "e", "d", "c",
+	}
 
 	for _, letter := range letters{
 		coordinate.ZoneLetter = letter
