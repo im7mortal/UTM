@@ -118,7 +118,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 	if zoneLetterExist {
 		coordinate.ZoneLetter = strings.ToUpper(coordinate.ZoneLetter)
-		if !(("C" <= coordinate.ZoneLetter && coordinate.ZoneLetter <= "X") || coordinate.ZoneLetter == "I" || coordinate.ZoneLetter == "O") {
+		if (!("C" <= coordinate.ZoneLetter && coordinate.ZoneLetter <= "X") || coordinate.ZoneLetter == "I" || coordinate.ZoneLetter == "O") {
 			err := errors.New("zone letter out of range (must be between C and X)")
 			return LatLon{}, err
 		}
