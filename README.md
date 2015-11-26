@@ -15,7 +15,7 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 ```
 	import "github.com/im7mortal/UTM"
 	latLon := UTM.LatLon{50.77535, 6.08389}
-	Coordinate := latLon.FromLatLon()
+	Coordinate, err := latLon.FromLatLon()
 ```
 The return has the form
 
@@ -25,7 +25,7 @@ Convert a (latitude, longitude) tuple into an UTM coordinate
 
 ```
 	coordinate := UTM.Coordinate{294409, 5628898, 32, "U"}
-	latLon := coordinate.ToLatLon()
+	latLon, err := coordinate.ToLatLon()
 ```
 The return has the form
 
@@ -43,7 +43,7 @@ You can't set ZoneLetter or northern both.
 			Northing :		5427057,
 			ZoneNumber :	60,
 		}
-	latLon := coordinate.ToLatLon(false)
+	latLon, err := coordinate.ToLatLon(false)
 ```
 
 The UTM coordinate system is explained on this [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
