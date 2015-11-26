@@ -42,7 +42,7 @@ var knownValues = []testData{
 	// Mendoza, Argentina
 	{
 		UTM.LatLon{-32.89018, -68.84405},
-		UTM.Coordinate{514586, 6360877, 19, "H"}, // todo revert to "h" for test
+		UTM.Coordinate{514586, 6360877, 19, "H"},
 		false,
 	},
 	// Fairbanks, Alaska, USA
