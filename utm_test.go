@@ -151,3 +151,51 @@ func TestFromLatLonBadInput(t *testing.T) {
 }
 
 
+var badInputToLatLon = []UTM.Coordinate{
+	// out of range ZoneLetter
+	UTM.Coordinate{377486, 6296562, 30, "Y"},
+	UTM.Coordinate{377486, 6296562, 30, "B"},
+	UTM.Coordinate{377486, 6296562, 30, "I"},
+	UTM.Coordinate{377486, 6296562, 30, "O"},
+	// out of range ZoneNumber
+	UTM.Coordinate{377486, 6296562, 0, "V"},
+	UTM.Coordinate{377486, 6296562, 61, "V"},
+	// out of range Easting
+	UTM.Coordinate{1000000, 6296562, 30, "V"},
+	UTM.Coordinate{99999, 6296562, 30, "V"},
+	// out of range Northing
+	UTM.Coordinate{377486, 10000001, 30, "V"},
+	UTM.Coordinate{377486, -1, 30, "V"},
+}
+
+func TestToLatLonBadInput(t *testing.T) {
+	for i, data := range badInputToLatLon {
+		_, err := data.ToLatLon()
+		if err == nil {
+			t.Errorf("Expected error. badInputToLatLon TestToLatLonBadInput case %d", i)
+		}
+	}
+	coordinate := UTM.Coordinate{
+		Easting:	377486,
+		Northing:	6296562,
+		ZoneNumber:	30,
+	}
+	_, err := coordinate.ToLatLon()
+	if err == nil {
+		t.Errorf("Expected error. too few arguments")
+	}
+	coordinate.ZoneLetter = "V"
+	_, err = coordinate.ToLatLon(true)
+	if err == nil {
+		t.Errorf("Expected error. too many arguments")
+	}
+	letters := []string{"X", "W", "V", "U", "T", "S", "R", "Q", "P", "N", "M", "L", "K", "J", "H", "G", "F", "E", "D", "C"}
+
+	for _, letter := range letters{
+		coordinate.ZoneLetter = letter
+		_, err := coordinate.ToLatLon()
+		if err != nil {
+			t.Errorf("letter isn't covered. %s", letter)
+		}
+	}
+}
