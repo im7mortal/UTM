@@ -72,6 +72,27 @@ func TestTO_LATLON(t *testing.T) {
 	}
 }
 
+func TestToLatLonWithNorthern(t *testing.T) {
+	for i, data := range knownValues {
+		UTMwithNorthern := UTM.Coordinate{
+			Easting :		data.UTM.Easting,
+			Northing :		data.UTM.Northing,
+			Zone_number :	data.UTM.Zone_number,
+		}
+
+		result, err := UTMwithNorthern.ToLatLon(data.northern)
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		if round(data.LatLon.Latitude) != round(result.Latitude) {
+			t.Errorf("Latitude TO_LATLON case %d", i)
+		}
+		if round(data.LatLon.Longitude) != round(result.Longitude) {
+			t.Errorf("Longitude TO_LATLON case %d", i)
+		}
+	}
+}
+
 func TestFROM_LATLON(t *testing.T) {
 
 	for i, data := range knownValues {

@@ -31,13 +31,20 @@ The return has the form
 
 	LatLon{50.77535, 6.08389}
 	
-	
-Not implemented yet
 
 Since the zone letter is not strictly needed for the conversion you may also
 the ``northern`` parameter instead, which is a named parameter and can be set
-to either ``True`` or ``False``. Have a look at the unit tests to see how it
-can be used.
+to either ``True`` or ``False``. In this case you should define fields clearly(!).
+You can't set Zone_letter or northern both.
+
+```
+	coordinate := UTM.UTM.Coordinate{
+			Easting :		313784,
+			Northing :		5427057,
+			Zone_number :	60,
+		}
+	latLon := coordinate.ToLatLon(false)
+```
 
 The UTM coordinate system is explained on this [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
 

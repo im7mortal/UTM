@@ -84,14 +84,22 @@ type LatLon struct {
 }
 
 //ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
-func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
-	/*func (coordinate *Coordinate) ToLatLon(northern ...bool) LatLon {
+//Since the zone letter is not strictly needed for the conversion you may also
+// the ``northern`` parameter instead, which is a named parameter and can be set
+// to either ``True`` or ``False``. In this case you should define fields clearly
+// You can't set Zone_letter or northern both.
+func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
+
 	nothernExist := len(northern) > 0;
-	if !(coordinate.Zone_letter && nothernExist) {
-		panic("either coordinate.Zone_letter or northern needs to be set")
-	} else if coordinate.Zone_letter && northern {
-		panic("set either zone_letter or northern, but not both")
-	}*/
+	zoneLetterExist := !(coordinate.Zone_letter == "")
+
+	if !zoneLetterExist && !nothernExist {
+		err := errors.New("either Zone_letter or northern needs to be set")
+		return LatLon{}, err
+	} else if zoneLetterExist && nothernExist {
+		err := errors.New("set either zone_letter or northern, but not both")
+		return LatLon{}, err
+	}
 
 	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
 		err := errors.New("easting out of range (must be between 100.000 m and 999.999 m")
@@ -106,16 +114,23 @@ func (coordinate *Coordinate) ToLatLon() (LatLon, error) {
 		return LatLon{}, err
 	}
 
-	coordinate.Zone_letter = strings.ToUpper(coordinate.Zone_letter)
-	if !(("C" <= coordinate.Zone_letter && coordinate.Zone_letter <= "X") || coordinate.Zone_letter == "I" || coordinate.Zone_letter == "O") {
-		panic("zone letter out of range (must be between C and X)")
+	var northernValue bool
+
+	if zoneLetterExist {
+		coordinate.Zone_letter = strings.ToUpper(coordinate.Zone_letter)
+		if !(("C" <= coordinate.Zone_letter && coordinate.Zone_letter <= "X") || coordinate.Zone_letter == "I" || coordinate.Zone_letter == "O") {
+			err := errors.New("zone letter out of range (must be between C and X)")
+			return LatLon{}, err
+		}
+		northernValue = (coordinate.Zone_letter >= "N")
+	} else {
+		northernValue = northern[0]
 	}
-	northern := (coordinate.Zone_letter >= "N")
 
 	x := float64(coordinate.Easting) - 500000
 	y := float64(coordinate.Northing)
 
-	if !northern {
+	if !northernValue {
 		y -= 10000000
 	}
 
