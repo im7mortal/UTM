@@ -77,7 +77,7 @@ func TestToLatLonWithNorthern(t *testing.T) {
 		UTMwithNorthern := UTM.Coordinate{
 			Easting :		data.UTM.Easting,
 			Northing :		data.UTM.Northing,
-			Zone_number :	data.UTM.Zone_number,
+			ZoneNumber :	data.UTM.ZoneNumber,
 		}
 
 		result, err := UTMwithNorthern.ToLatLon(data.northern)
@@ -106,11 +106,11 @@ func TestFROM_LATLON(t *testing.T) {
 		if data.UTM.Northing != result.Northing {
 			t.Errorf("Northing FROM_LATLON case %d", i)
 		}
-		if data.UTM.Zone_letter != result.Zone_letter {
-			t.Errorf("Zone_letter FROM_LATLON case %d", i)
+		if data.UTM.ZoneLetter != result.ZoneLetter {
+			t.Errorf("ZoneLetter FROM_LATLON case %d", i)
 		}
-		if data.UTM.Zone_number != result.Zone_number {
-			t.Errorf("Zone_number FROM_LATLON case %d", i)
+		if data.UTM.ZoneNumber != result.ZoneNumber {
+			t.Errorf("ZoneNumber FROM_LATLON case %d", i)
 		}
 	}
 }

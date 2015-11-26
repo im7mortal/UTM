@@ -73,8 +73,8 @@ var zone_letters = []zone_letter{
 type Coordinate struct {
 	Easting     int
 	Northing    int
-	Zone_number int
-	Zone_letter string
+	ZoneNumber int
+	ZoneLetter string
 }
 
 //LatLon contains a latitude and longitude
@@ -87,17 +87,17 @@ type LatLon struct {
 //Since the zone letter is not strictly needed for the conversion you may also
 // the ``northern`` parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
-// You can't set Zone_letter or northern both.
+// You can't set ZoneLetter or northern both.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 	nothernExist := len(northern) > 0;
-	zoneLetterExist := !(coordinate.Zone_letter == "")
+	zoneLetterExist := !(coordinate.ZoneLetter == "")
 
 	if !zoneLetterExist && !nothernExist {
-		err := errors.New("either Zone_letter or northern needs to be set")
+		err := errors.New("either ZoneLetter or northern needs to be set")
 		return LatLon{}, err
 	} else if zoneLetterExist && nothernExist {
-		err := errors.New("set either zone_letter or northern, but not both")
+		err := errors.New("set either ZoneLetter or northern, but not both")
 		return LatLon{}, err
 	}
 
@@ -109,7 +109,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 		err := errors.New("northing out of range (must be between 0 m and 10.000.000 m)")
 		return LatLon{}, err
 	}
-	if !(1 <= coordinate.Zone_number && coordinate.Zone_number <= 60) {
+	if !(1 <= coordinate.ZoneNumber && coordinate.ZoneNumber <= 60) {
 		err := errors.New("zone number out of range (must be between 1 and 60)")
 		return LatLon{}, err
 	}
@@ -117,12 +117,12 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	var northernValue bool
 
 	if zoneLetterExist {
-		coordinate.Zone_letter = strings.ToUpper(coordinate.Zone_letter)
-		if !(("C" <= coordinate.Zone_letter && coordinate.Zone_letter <= "X") || coordinate.Zone_letter == "I" || coordinate.Zone_letter == "O") {
+		coordinate.ZoneLetter = strings.ToUpper(coordinate.ZoneLetter)
+		if !(("C" <= coordinate.ZoneLetter && coordinate.ZoneLetter <= "X") || coordinate.ZoneLetter == "I" || coordinate.ZoneLetter == "O") {
 			err := errors.New("zone letter out of range (must be between C and X)")
 			return LatLon{}, err
 		}
-		northernValue = (coordinate.Zone_letter >= "N")
+		northernValue = (coordinate.ZoneLetter >= "N")
 	} else {
 		northernValue = northern[0]
 	}
@@ -177,7 +177,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	d3 / 6 * (1 + 2 * p_tan2 + c) +
 	d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * e_p2 + 24 * p_tan4)) / p_cos
 
-	return LatLon{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.Zone_number))}, nil
+	return LatLon{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.ZoneNumber))}, nil
 
 }
 

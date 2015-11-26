@@ -35,13 +35,13 @@ The return has the form
 Since the zone letter is not strictly needed for the conversion you may also
 the ``northern`` parameter instead, which is a named parameter and can be set
 to either ``true`` or ``false``. In this case you should define fields clearly(!).
-You can't set Zone_letter or northern both.
+You can't set ZoneLetter or northern both.
 
 ```
 	coordinate := UTM.UTM.Coordinate{
 			Easting :		313784,
 			Northing :		5427057,
-			Zone_number :	60,
+			ZoneNumber :	60,
 		}
 	latLon := coordinate.ToLatLon(false)
 ```
