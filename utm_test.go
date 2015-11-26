@@ -1,56 +1,58 @@
-package UTM
+package UTM_test
 
 import (
 	"testing"
+	"github.com/im7mortal/UTM"
+	"math"
 )
 
 type testData struct {
-	LatLon   LatLon
-	UTM      Coordinate
+	LatLon   UTM.LatLon
+	UTM      UTM.Coordinate
 	northern bool
 }
 
 var knownValues = []testData{
 	// Aachen, Germany
 	{
-		LatLon{50.77535, 6.08389},
-		Coordinate{294409, 5628898, 32, "U"},
+		UTM.LatLon{50.77535, 6.08389},
+		UTM.Coordinate{294409, 5628898, 32, "U"},
 		true,
 	},
 	// New York, USA
 	{
-		LatLon{40.71435, -74.00597},
-		Coordinate{583960, 4507523, 18, "T"},
+		UTM.LatLon{40.71435, -74.00597},
+		UTM.Coordinate{583960, 4507523, 18, "T"},
 		true,
 	},
 	// Wellington, New Zealand
 	{
-		LatLon{-41.28646, 174.77624},
-		Coordinate{313784, 5427057, 60, "G"},
+		UTM.LatLon{-41.28646, 174.77624},
+		UTM.Coordinate{313784, 5427057, 60, "G"},
 		false,
 	},
 	// Capetown, South Africa
 	{
-		LatLon{-33.92487, 18.42406},
-		Coordinate{261878, 6243186, 34, "H"},
+		UTM.LatLon{-33.92487, 18.42406},
+		UTM.Coordinate{261878, 6243186, 34, "H"},
 		false,
 	},
 	// Mendoza, Argentina
 	{
-		LatLon{-32.89018, -68.84405},
-		Coordinate{514586, 6360877, 19, "H"}, // todo revert to "h" for test
+		UTM.LatLon{-32.89018, -68.84405},
+		UTM.Coordinate{514586, 6360877, 19, "H"}, // todo revert to "h" for test
 		false,
 	},
 	// Fairbanks, Alaska, USA
 	{
-		LatLon{64.83778, -147.71639},
-		Coordinate{466013, 7190568, 6, "W"},
+		UTM.LatLon{64.83778, -147.71639},
+		UTM.Coordinate{466013, 7190568, 6, "W"},
 		true,
 	},
 	// Ben Nevis, Scotland, UK
 	{
-		LatLon{56.79680, -5.00601},
-		Coordinate{377486, 6296562, 30, "V"},
+		UTM.LatLon{56.79680, -5.00601},
+		UTM.Coordinate{377486, 6296562, 30, "V"},
 		true,
 	},
 }
@@ -91,3 +93,5 @@ func TestFROM_LATLON(t *testing.T) {
 		}
 	}
 }
+
+func round(f float64) float64 { return math.Floor(f + .5) }
