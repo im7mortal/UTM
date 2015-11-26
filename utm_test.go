@@ -57,17 +57,17 @@ var knownValues = []testData{
 	},
 }
 
-func TestTO_LATLON(t *testing.T) {
+func TestToLatLon(t *testing.T) {
 	for i, data := range knownValues {
 		result, err := data.UTM.ToLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
 		}
 		if round(data.LatLon.Latitude) != round(result.Latitude) {
-			t.Errorf("Latitude TO_LATLON case %d", i)
+			t.Errorf("Latitude ToLatLon case %d", i)
 		}
 		if round(data.LatLon.Longitude) != round(result.Longitude) {
-			t.Errorf("Longitude TO_LATLON case %d", i)
+			t.Errorf("Longitude ToLatLon case %d", i)
 		}
 	}
 }
@@ -85,15 +85,15 @@ func TestToLatLonWithNorthern(t *testing.T) {
 			t.Fatal(err.Error())
 		}
 		if round(data.LatLon.Latitude) != round(result.Latitude) {
-			t.Errorf("Latitude TO_LATLON case %d", i)
+			t.Errorf("Latitude TestToLatLonWithNorthern case %d", i)
 		}
 		if round(data.LatLon.Longitude) != round(result.Longitude) {
-			t.Errorf("Longitude TO_LATLON case %d", i)
+			t.Errorf("Longitude TestToLatLonWithNorthern case %d", i)
 		}
 	}
 }
 
-func TestFROM_LATLON(t *testing.T) {
+func TestFromLatLon(t *testing.T) {
 
 	for i, data := range knownValues {
 		result, err := data.LatLon.FromLatLon()
@@ -101,16 +101,16 @@ func TestFROM_LATLON(t *testing.T) {
 			t.Fatal(err.Error())
 		}
 		if data.UTM.Easting != result.Easting {
-			t.Errorf("Easting FROM_LATLON case %d", i)
+			t.Errorf("Easting FromLatLon case %d", i)
 		}
 		if data.UTM.Northing != result.Northing {
-			t.Errorf("Northing FROM_LATLON case %d", i)
+			t.Errorf("Northing FromLatLon case %d", i)
 		}
 		if data.UTM.ZoneLetter != result.ZoneLetter {
-			t.Errorf("ZoneLetter FROM_LATLON case %d", i)
+			t.Errorf("ZoneLetter FromLatLon case %d", i)
 		}
 		if data.UTM.ZoneNumber != result.ZoneNumber {
-			t.Errorf("ZoneNumber FROM_LATLON case %d", i)
+			t.Errorf("ZoneNumber FromLatLon case %d", i)
 		}
 	}
 }
