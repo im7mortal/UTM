@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+func round(f float64) float64 { return math.Floor(f + .5) }
+
 type testData struct {
 	LatLon   UTM.LatLon
 	UTM      UTM.Coordinate
@@ -115,4 +117,37 @@ func TestFromLatLon(t *testing.T) {
 	}
 }
 
-func round(f float64) float64 { return math.Floor(f + .5) }
+var badInputLatLon = []UTM.LatLon{
+	UTM.LatLon{-81, 0},
+	UTM.LatLon{85, 0},
+	UTM.LatLon{0, -185},
+	UTM.LatLon{0, 185},
+}
+
+func TestFromLatLonBadInput(t *testing.T) {
+	for i, data := range badInputLatLon {
+		_, err := data.FromLatLon()
+		if err == nil {
+			t.Errorf("Expected error. badInputLatLon TestFromLatLonBadInput case %d", i)
+		}
+	}
+	latLon := UTM.LatLon{}
+	latLon.Longitude = 0
+	for i := -8000.0; i < 8401.0; i++ {
+		latLon.Latitude = i / 100
+		_, err := latLon.FromLatLon()
+		if err != nil {
+			t.Errorf("not cover Latitude %d", i / 100)
+		}
+	}
+	latLon.Latitude = 0
+	for i := -18000.0; i < 18001.0; i++ {
+		latLon.Longitude = i / 100
+		_, err := latLon.FromLatLon()
+		if err != nil {
+			t.Errorf("not cover Longitude %d", i / 100)
+		}
+	}
+}
+
+
