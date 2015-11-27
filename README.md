@@ -51,6 +51,16 @@ The UTM coordinate system is explained on this [Wikipedia page](https://en.wikip
 Speed
 -----
 
+Benchmark             | Amount of iterations | Average speed
+--------------------- | -------------------- | -------------
+ToLatLon              | 10000000             | 225 ns/op
+ToLatLonWithNorthern  | 10000000             | 155 ns/op
+FromLatLon            | 20000000             | 136 ns/op
+
+> go test -bench=.
+
+Data for comparison in oldBenchmark.txt
+
 Development
 -----------
 
