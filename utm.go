@@ -4,7 +4,7 @@ package UTM
 import (
 	"errors"
 	"math"
-	"strings"
+	"unicode"
 )
 
 const (
@@ -117,12 +117,12 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	var northernValue bool
 
 	if zoneLetterExist {
-		coordinate.ZoneLetter = strings.ToUpper(coordinate.ZoneLetter)
-		if (!("C" <= coordinate.ZoneLetter && coordinate.ZoneLetter <= "X") || coordinate.ZoneLetter == "I" || coordinate.ZoneLetter == "O") {
+		zoneLetter := unicode.ToUpper(rune(coordinate.ZoneLetter[0]))
+		if (!('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O') {
 			err := errors.New("zone letter out of range (must be between C and X)")
 			return LatLon{}, err
 		}
-		northernValue = (coordinate.ZoneLetter >= "N")
+		northernValue = (zoneLetter >= 'N')
 	} else {
 		northernValue = northern[0]
 	}
