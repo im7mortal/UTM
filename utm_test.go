@@ -103,10 +103,10 @@ func TestFromLatLon(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		if data.UTM.Easting != result.Easting {
+		if round(data.UTM.Easting) != round(result.Easting) {
 			t.Errorf("Easting FromLatLon case %d", i)
 		}
-		if data.UTM.Northing != result.Northing {
+		if round(data.UTM.Northing) != round(result.Northing) {
 			t.Errorf("Northing FromLatLon case %d", i)
 		}
 		if data.UTM.ZoneLetter != result.ZoneLetter {
