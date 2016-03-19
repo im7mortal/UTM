@@ -1,10 +1,12 @@
 package UTM_test
+
 import (
 	"testing"
+
 	"github.com/im7mortal/UTM"
 )
 
-var coordinate = UTM.Coordinate{466013, 7190568, 6, "W"};
+var coordinate = UTM.Coordinate{466013, 7190568, 6, "W"}
 
 func BenchmarkToLatLon(b *testing.B) {
 	for i := 0; i < b.N; i++ {
@@ -15,7 +17,7 @@ func BenchmarkToLatLon(b *testing.B) {
 }
 
 func BenchmarkToLatLonWithNorthern(b *testing.B) {
-	coordinate.ZoneLetter = "";
+	coordinate.ZoneLetter = ""
 	for i := 0; i < b.N; i++ {
 		if _, err := coordinate.ToLatLon(true); err != nil {
 			b.Fatalf("benchmark fatal BenchmarkToLatLonWithNorthern")

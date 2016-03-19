@@ -44,7 +44,7 @@ const x = math.Pi / 180
 
 func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
-func round(f float64) float64 { return math.Floor(f + .5) }
+
 var zone_letters = []zone_letter{
 	{84, " "},
 	{72, "X"},
@@ -71,8 +71,8 @@ var zone_letters = []zone_letter{
 
 //Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
 type Coordinate struct {
-	Easting     int
-	Northing    int
+	Easting    float64
+	Northing   float64
 	ZoneNumber int
 	ZoneLetter string
 }
@@ -90,7 +90,7 @@ type LatLon struct {
 // You can't set ZoneLetter or northern both.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
-	nothernExist := len(northern) > 0;
+	nothernExist := len(northern) > 0
 	zoneLetterExist := !(coordinate.ZoneLetter == "")
 
 	if !zoneLetterExist && !nothernExist {
@@ -118,7 +118,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 	if zoneLetterExist {
 		zoneLetter := unicode.ToUpper(rune(coordinate.ZoneLetter[0]))
-		if (!('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O') {
+		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
 			err := errors.New("zone letter out of range (must be between C and X)")
 			return LatLon{}, err
 		}
@@ -127,8 +127,8 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 		northernValue = northern[0]
 	}
 
-	x := float64(coordinate.Easting) - 500000
-	y := float64(coordinate.Northing)
+	x := coordinate.Easting - 500000
+	y := coordinate.Northing
 
 	if !northernValue {
 		y -= 10000000
@@ -138,10 +138,10 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	mu := m / (r * m1)
 
 	p_rad := (mu +
-	p2 * math.Sin(2 * mu) +
-	p3 * math.Sin(4 * mu) +
-	p4 * math.Sin(6 * mu) +
-	p5 * math.Sin(8 * mu))
+		p2*math.Sin(2*mu) +
+		p3*math.Sin(4*mu) +
+		p4*math.Sin(6*mu) +
+		p5*math.Sin(8*mu))
 
 	p_sin := math.Sin(p_rad)
 	p_sin2 := p_sin * p_sin
@@ -168,28 +168,28 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	d5 := d4 * d
 	d6 := d5 * d
 
-	latitude := (p_rad - (p_tan / rad) *
-	(d2 / 2 -
-	d4 / 24 * (5 + 3 * p_tan2 + 10 * c - 4 * c2 - 9 * e_p2)) +
-	d6 / 720 * (61 + 90 * p_tan2 + 298 * c + 45 * p_tan4 - 252 * e_p2 - 3 * c2))
+	latitude := (p_rad - (p_tan/rad)*
+		(d2/2-
+			d4/24*(5+3*p_tan2+10*c-4*c2-9*e_p2)) +
+		d6/720*(61+90*p_tan2+298*c+45*p_tan4-252*e_p2-3*c2))
 
 	longitude := (d -
-	d3 / 6 * (1 + 2 * p_tan2 + c) +
-	d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * e_p2 + 24 * p_tan4)) / p_cos
+		d3/6*(1+2*p_tan2+c) +
+		d5/120*(5-2*c+28*p_tan2-3*c2+8*e_p2+24*p_tan4)) / p_cos
 
 	return LatLon{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.ZoneNumber))}, nil
 
 }
 
 //FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func (point *LatLon) FromLatLon() (Coordinate, error) {
+func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
-		err := errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
-		return Coordinate{}, err
+		err = errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
+		return
 	}
 	if !(-180.0 <= point.Longitude && point.Longitude <= 180.0) {
-		err := errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
-		return Coordinate{}, err
+		err = errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
+		return
 	}
 
 	lat_rad := rad(point.Latitude)
@@ -199,14 +199,13 @@ func (point *LatLon) FromLatLon() (Coordinate, error) {
 	lat_tan := lat_sin / lat_cos
 	lat_tan2 := lat_tan * lat_tan
 	lat_tan4 := lat_tan2 * lat_tan2
-	var zone_number int
 
-	zone_number = latlon_to_zone_number(point.Latitude, point.Longitude)
+	coord.ZoneNumber = latlon_to_zone_number(point.Latitude, point.Longitude)
 
-	zone_letter := latitude_to_zone_letter(point.Latitude)
+	coord.ZoneLetter = latitude_to_zone_letter(point.Latitude)
 
 	lon_rad := rad(point.Longitude)
-	central_lon := zone_number_to_central_longitude(zone_number)
+	central_lon := zone_number_to_central_longitude(coord.ZoneNumber)
 	central_lon_rad := rad(float64(central_lon))
 
 	n := r / math.Sqrt(1-e*lat_sin*lat_sin)
@@ -218,27 +217,22 @@ func (point *LatLon) FromLatLon() (Coordinate, error) {
 	a4 := a3 * a
 	a5 := a4 * a
 	a6 := a5 * a
-	m := r * (m1 * lat_rad -
-	m2 * math.Sin(2 * lat_rad) +
-	m3 * math.Sin(4 * lat_rad) -
-	m4 * math.Sin(6 * lat_rad))
-	easting := k0 * n * (a +
-	a3 / 6 * (1 - lat_tan2 + c) +
-	a5 / 120 * (5 - 18 * lat_tan2 + lat_tan4 + 72 * c - 58 * e_p2)) + 500000
-	northing := k0 * (m + n * lat_tan * (a2 / 2 +
-	a4 / 24 * (5 - lat_tan2 + 9 * c + 4 * c * c) +
-	a6 / 720 * (61 - 58 * lat_tan2 + lat_tan4 + 600 * c - 330 * e_p2)))
+	m := r * (m1*lat_rad -
+		m2*math.Sin(2*lat_rad) +
+		m3*math.Sin(4*lat_rad) -
+		m4*math.Sin(6*lat_rad))
+	coord.Easting = k0*n*(a+
+		a3/6*(1-lat_tan2+c)+
+		a5/120*(5-18*lat_tan2+lat_tan4+72*c-58*e_p2)) + 500000
+	coord.Northing = k0 * (m + n*lat_tan*(a2/2+
+		a4/24*(5-lat_tan2+9*c+4*c*c)+
+		a6/720*(61-58*lat_tan2+lat_tan4+600*c-330*e_p2)))
 
 	if point.Latitude < 0 {
-		northing += 10000000
+		coord.Northing += 10000000
 	}
 
-	return Coordinate{
-		int(round(easting)),
-		int(round(northing)),
-		zone_number,
-		zone_letter,
-	}, nil
+	return
 }
 
 func latitude_to_zone_letter(latitude float64) string {
