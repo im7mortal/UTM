@@ -1,9 +1,10 @@
 package UTM_test
 
 import (
-	"testing"
-	"github.com/im7mortal/UTM"
 	"math"
+	"testing"
+
+	"github.com/im7mortal/UTM"
 )
 
 func round(f float64) float64 { return math.Floor(f + .5) }
@@ -77,9 +78,9 @@ func TestToLatLon(t *testing.T) {
 func TestToLatLonWithNorthern(t *testing.T) {
 	for i, data := range knownValues {
 		UTMwithNorthern := UTM.Coordinate{
-			Easting :		data.UTM.Easting,
-			Northing :		data.UTM.Northing,
-			ZoneNumber :	data.UTM.ZoneNumber,
+			Easting:    data.UTM.Easting,
+			Northing:   data.UTM.Northing,
+			ZoneNumber: data.UTM.ZoneNumber,
 		}
 
 		result, err := UTMwithNorthern.ToLatLon(data.northern)
@@ -137,7 +138,7 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Latitude = i / 100
 		_, err := latLon.FromLatLon()
 		if err != nil {
-			t.Errorf("not cover Latitude %d", i / 100)
+			t.Errorf("not cover Latitude %d", i/100)
 		}
 	}
 	latLon.Latitude = 0
@@ -145,11 +146,10 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Longitude = i / 100
 		_, err := latLon.FromLatLon()
 		if err != nil {
-			t.Errorf("not cover Longitude %d", i / 100)
+			t.Errorf("not cover Longitude %d", i/100)
 		}
 	}
 }
-
 
 var badInputToLatLon = []UTM.Coordinate{
 	// out of range ZoneLetter
@@ -178,9 +178,9 @@ func TestToLatLonBadInput(t *testing.T) {
 		}
 	}
 	coordinate := UTM.Coordinate{
-		Easting:	377486,
-		Northing:	6296562,
-		ZoneNumber:	30,
+		Easting:    377486,
+		Northing:   6296562,
+		ZoneNumber: 30,
 	}
 	_, err := coordinate.ToLatLon()
 	if err == nil {
@@ -196,7 +196,7 @@ func TestToLatLonBadInput(t *testing.T) {
 		"x", "w", "v", "u", "t", "s", "r", "q", "p", "n", "m", "l", "k", "j", "h", "g", "f", "e", "d", "c",
 	}
 
-	for _, letter := range letters{
+	for _, letter := range letters {
 		coordinate.ZoneLetter = letter
 		_, err := coordinate.ToLatLon()
 		if err != nil {
