@@ -156,7 +156,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	ep_sin_sqrt := math.Sqrt(1 - e*p_sin2)
 
 	n := r / ep_sin_sqrt
-	rad := (1 - r) / ep_sin
+	rad := (1 - e) / ep_sin
 
 	c := _e * p_cos * p_cos
 	c2 := c * c
