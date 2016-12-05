@@ -55,9 +55,10 @@ Speed
 
 Benchmark             | Amount of iterations | Average speed
 --------------------- | -------------------- | -------------
-ToLatLon              | 10000000             | 152 ns/op
-ToLatLonWithNorthern  | 10000000             | 150 ns/op
-FromLatLon            | 20000000             | 110 ns/op
+ToLatLon              | 10000000             | 146 ns/op
+ToLatLonWithNorthern  | 10000000             | 141 ns/op
+FromLatLon            | 20000000             | 100 ns/op
+FromLatLonF           | 20000000             |  90 ns/op
 
 > go test -bench=.
 

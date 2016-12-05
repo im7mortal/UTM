@@ -5,7 +5,7 @@ import (
 )
 
 /*
-FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates.
+FromLatLonF convert a latitude and longitude to Universal Transverse Mercator coordinates.
 Difference from method is that it get input directly. Panic instead errors allow put function like input.
 Don't forget defer statement.
 */
