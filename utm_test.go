@@ -118,6 +118,24 @@ func TestFromLatLon(t *testing.T) {
 	}
 }
 
+func TestFromLatLonF(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fatalf(r.(string))
+		}
+	}()
+
+	for i, data := range knownValues {
+		e, n := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude)
+		if round(data.UTM.Easting) != round(e) {
+			t.Errorf("Easting FromLatLon case %d", i)
+		}
+		if round(data.UTM.Northing) != round(n) {
+			t.Errorf("Northing FromLatLon case %d", i)
+		}
+	}
+}
+
 var badInputLatLon = []UTM.LatLon{
 	{-81, 0},
 	{85, 0},
@@ -138,7 +156,7 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Latitude = i / 100
 		_, err := latLon.FromLatLon()
 		if err != nil {
-			t.Errorf("not cover Latitude %d", i/100)
+			t.Errorf("not cover Latitude %d", i / 100)
 		}
 	}
 	latLon.Latitude = 0
@@ -146,7 +164,69 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Longitude = i / 100
 		_, err := latLon.FromLatLon()
 		if err != nil {
-			t.Errorf("not cover Longitude %d", i/100)
+			t.Errorf("not cover Longitude %d", i / 100)
+		}
+	}
+}
+
+func TestFromLatLonBadInputF(t *testing.T) {
+
+	suppressPanic := func(i int) {
+		defer func() {
+			recover()
+		}()
+		UTM.FromLatLon(badInputLatLon[i].Latitude, badInputLatLon[i].Longitude)
+		t.Errorf("Expected panic. badInputLatLon TestFromLatLonBadInput case %d", i)
+	}
+	for i := range badInputLatLon {
+		suppressPanic(i)
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			s := r.(string)
+			t.Errorf("not cover latitude %s", s)
+		}
+	}()
+	longitude := 0.
+	latitude := 0.
+	for i := -8000.0; i < 8401.0; i++ {
+		latitude = i / 100
+		UTM.FromLatLon(latitude, longitude)
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			s := r.(string)
+			t.Errorf("not cover longitude %s", s)
+		}
+	}()
+	latitude = 0.
+	for i := -18000.0; i < 18001.0; i++ {
+		longitude = i / 100
+		UTM.FromLatLon(latitude, longitude)
+	}
+}
+
+// LatLon.FromLatLon and FromLatLon must calculate the same easting and northing
+
+func TestFromLatLonAndF(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			s := r.(string)
+			t.Errorf("not cover longitude %s", s)
+		}
+	}()
+	for i, data := range knownValues {
+		result, err := data.LatLon.FromLatLon()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		e, n := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude)
+		if round(e) != round(result.Easting) {
+			t.Errorf("Easting FromLatLon case %d", i)
+		}
+		if round(n) != round(result.Northing) {
+			t.Errorf("Northing FromLatLon case %d", i)
 		}
 	}
 }
