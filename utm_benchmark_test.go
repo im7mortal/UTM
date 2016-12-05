@@ -44,6 +44,6 @@ func BenchmarkFromLatLonF(b *testing.B) {
 	lat := 64.83778
 	lon := -147.71639
 	for i := 0; i < b.N; i++ {
-		UTM.FromLatLon(lat, lon)
+		UTM.FromLatLonF(lat, lon)
 	}
 }

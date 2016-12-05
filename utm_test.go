@@ -126,7 +126,7 @@ func TestFromLatLonF(t *testing.T) {
 	}()
 
 	for i, data := range knownValues {
-		e, n := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude)
+		e, n := UTM.FromLatLonF(data.LatLon.Latitude, data.LatLon.Longitude)
 		if round(data.UTM.Easting) != round(e) {
 			t.Errorf("Easting FromLatLon case %d", i)
 		}
@@ -175,7 +175,7 @@ func TestFromLatLonBadInputF(t *testing.T) {
 		defer func() {
 			recover()
 		}()
-		UTM.FromLatLon(badInputLatLon[i].Latitude, badInputLatLon[i].Longitude)
+		UTM.FromLatLonF(badInputLatLon[i].Latitude, badInputLatLon[i].Longitude)
 		t.Errorf("Expected panic. badInputLatLon TestFromLatLonBadInput case %d", i)
 	}
 	for i := range badInputLatLon {
@@ -192,7 +192,7 @@ func TestFromLatLonBadInputF(t *testing.T) {
 	latitude := 0.
 	for i := -8000.0; i < 8401.0; i++ {
 		latitude = i / 100
-		UTM.FromLatLon(latitude, longitude)
+		UTM.FromLatLonF(latitude, longitude)
 	}
 	defer func() {
 		if r := recover(); r != nil {
@@ -203,7 +203,7 @@ func TestFromLatLonBadInputF(t *testing.T) {
 	latitude = 0.
 	for i := -18000.0; i < 18001.0; i++ {
 		longitude = i / 100
-		UTM.FromLatLon(latitude, longitude)
+		UTM.FromLatLonF(latitude, longitude)
 	}
 }
 
@@ -221,7 +221,7 @@ func TestFromLatLonAndF(t *testing.T) {
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		e, n := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude)
+		e, n := UTM.FromLatLonF(data.LatLon.Latitude, data.LatLon.Longitude)
 		if round(e) != round(result.Easting) {
 			t.Errorf("Easting FromLatLon case %d", i)
 		}

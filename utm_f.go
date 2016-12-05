@@ -5,10 +5,12 @@ import (
 	"math"
 )
 
-//FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-//version with micro optimizations
-//panic instead errors
-func FromLatLon(lat, lon float64) (easting, northing float64) {
+/*
+FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates.
+Difference from method is that it get input directly. Panic instead errors allow put function like input.
+Don't forget defer statement.
+*/
+func FromLatLonF(lat, lon float64) (easting, northing float64) {
 	if !(-80.0 <= lat && lat <= 84.0) {
 		panic("latitude out of range (must be between 80 deg S and 84 deg N)")
 	}
