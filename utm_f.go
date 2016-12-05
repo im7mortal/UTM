@@ -1,4 +1,3 @@
-// Package UTM is bidirectional UTM-WGS84 converter for golang
 package UTM
 
 import (
