@@ -70,6 +70,8 @@ var zone_letters = []zone_letter{
 }
 
 //Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
+//
+// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
 type Coordinate struct {
 	Easting    float64
 	Northing   float64
@@ -78,106 +80,24 @@ type Coordinate struct {
 }
 
 //LatLon contains a latitude and longitude
+//
+// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
 type LatLon struct {
 	Latitude  float64
 	Longitude float64
 }
 
-//ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
-//Since the zone letter is not strictly needed for the conversion you may also
+// ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
+// Since the zone letter is not strictly needed for the conversion you may also
 // the ``northern`` parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
+//
+// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
-	nothernExist := len(northern) > 0
-	zoneLetterExist := !(coordinate.ZoneLetter == "")
-
-	if !zoneLetterExist && !nothernExist {
-		err := inputError("either ZoneLetter or northern needs to be set")
-		return LatLon{}, err
-	} else if zoneLetterExist && nothernExist {
-		err := inputError("set either ZoneLetter or northern, but not both")
-		return LatLon{}, err
-	}
-
-	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
-		err := inputError("easting out of range (must be between 100.000 m and 999.999 m")
-		return LatLon{}, err
-	}
-	if !(0 <= coordinate.Northing && coordinate.Northing <= 10000000) {
-		err := inputError("northing out of range (must be between 0 m and 10.000.000 m)")
-		return LatLon{}, err
-	}
-	if !(1 <= coordinate.ZoneNumber && coordinate.ZoneNumber <= 60) {
-		err := inputError("zone number out of range (must be between 1 and 60)")
-		return LatLon{}, err
-	}
-
-	var northernValue bool
-
-	if zoneLetterExist {
-		zoneLetter := unicode.ToUpper(rune(coordinate.ZoneLetter[0]))
-		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
-			err := inputError("zone letter out of range (must be between C and X)")
-			return LatLon{}, err
-		}
-		northernValue = (zoneLetter >= 'N')
-	} else {
-		northernValue = northern[0]
-	}
-
-	x := coordinate.Easting - 500000
-	y := coordinate.Northing
-
-	if !northernValue {
-		y -= 10000000
-	}
-
-	m := y / k0
-	mu := m / (r * m1)
-
-	p_rad := (mu +
-		p2*math.Sin(2*mu) +
-		p3*math.Sin(4*mu) +
-		p4*math.Sin(6*mu) +
-		p5*math.Sin(8*mu))
-
-	p_sin := math.Sin(p_rad)
-	p_sin2 := p_sin * p_sin
-
-	p_cos := math.Cos(p_rad)
-
-	p_tan := p_sin / p_cos
-	p_tan2 := p_tan * p_tan
-	p_tan4 := p_tan2 * p_tan2
-
-	ep_sin := 1 - e*p_sin2
-	ep_sin_sqrt := math.Sqrt(1 - e*p_sin2)
-
-	n := r / ep_sin_sqrt
-	rad := (1 - e) / ep_sin
-
-	c := _e * p_cos * p_cos
-	c2 := c * c
-
-	d := x / (n * k0)
-	d2 := d * d
-	d3 := d2 * d
-	d4 := d3 * d
-	d5 := d4 * d
-	d6 := d5 * d
-
-	latitude := (p_rad - (p_tan/rad)*
-		(d2/2-
-			d4/24*(5+3*p_tan2+10*c-4*c2-9*e_p2)) +
-		d6/720*(61+90*p_tan2+298*c+45*p_tan4-252*e_p2-3*c2))
-
-	longitude := (d -
-		d3/6*(1+2*p_tan2+c) +
-		d5/120*(5-2*c+28*p_tan2-3*c2+8*e_p2+24*p_tan4)) / p_cos
-
-	return LatLon{deg(latitude), deg(longitude) + float64(zone_number_to_central_longitude(coordinate.ZoneNumber))}, nil
+	latitude, longitude, err := UTMToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
+	return LatLon{latitude, longitude}, err
 
 }
 
@@ -354,7 +274,7 @@ func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing 
 
 // FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
 //
-// Deprecated: Use FromLatLon functions to converse instead.
+// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
 func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	// Northing always false in this implementation.
 	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = LatLonToUTM(point.Latitude, point.Longitude, false)
