@@ -94,23 +94,23 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	zoneLetterExist := !(coordinate.ZoneLetter == "")
 
 	if !zoneLetterExist && !nothernExist {
-		err := errors.New("either ZoneLetter or northern needs to be set")
+		err := inputError("either ZoneLetter or northern needs to be set")
 		return LatLon{}, err
 	} else if zoneLetterExist && nothernExist {
-		err := errors.New("set either ZoneLetter or northern, but not both")
+		err := inputError("set either ZoneLetter or northern, but not both")
 		return LatLon{}, err
 	}
 
 	if !(100000 <= coordinate.Easting && coordinate.Easting < 1000000) {
-		err := errors.New("easting out of range (must be between 100.000 m and 999.999 m")
+		err := inputError("easting out of range (must be between 100.000 m and 999.999 m")
 		return LatLon{}, err
 	}
 	if !(0 <= coordinate.Northing && coordinate.Northing <= 10000000) {
-		err := errors.New("northing out of range (must be between 0 m and 10.000.000 m)")
+		err := inputError("northing out of range (must be between 0 m and 10.000.000 m)")
 		return LatLon{}, err
 	}
 	if !(1 <= coordinate.ZoneNumber && coordinate.ZoneNumber <= 60) {
-		err := errors.New("zone number out of range (must be between 1 and 60)")
+		err := inputError("zone number out of range (must be between 1 and 60)")
 		return LatLon{}, err
 	}
 
@@ -119,7 +119,7 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 	if zoneLetterExist {
 		zoneLetter := unicode.ToUpper(rune(coordinate.ZoneLetter[0]))
 		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
-			err := errors.New("zone letter out of range (must be between C and X)")
+			err := inputError("zone letter out of range (must be between C and X)")
 			return LatLon{}, err
 		}
 		northernValue = (zoneLetter >= 'N')
@@ -184,11 +184,11 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 //FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
 func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
-		err = errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
+		err = inputError("latitude out of range (must be between 80 deg S and 84 deg N)")
 		return
 	}
 	if !(-180.0 <= point.Longitude && point.Longitude <= 180.0) {
-		err = errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
+		err = inputError("longitude out of range (must be between 180 deg W and 180 deg E)")
 		return
 	}
 
@@ -266,4 +266,11 @@ func latlon_to_zone_number(latitude float64, longitude float64) int {
 
 func zone_number_to_central_longitude(zone_number int) int {
 	return (zone_number-1)*6 - 180 + 3
+}
+
+// InputError allow to distinguish if an error is from UTM conversion functions.
+type InputError error
+
+func inputError(text string) InputError {
+	return InputError(errors.New(text))
 }
