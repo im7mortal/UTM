@@ -8,34 +8,34 @@ import (
 )
 
 const (
-	k0 float64 = 0.9996
-	e  float64 = 0.00669438
-	r          = 6378137
+	k0 = 0.9996
+	e  = 0.00669438
+	r  = 6378137
 )
 
 var e2 = e * e
 var e3 = e2 * e
-var e_p2 = e / (1.0 - e)
+var eP2 = e / (1.0 - e)
 
-var sqrt_e = math.Sqrt(1 - e)
+var sqrtE = math.Sqrt(1 - e)
 
-var _e = (1 - sqrt_e) / (1 + sqrt_e)
-var _e2 = _e * _e
-var _e3 = _e2 * _e
-var _e4 = _e3 * _e
-var _e5 = _e4 * _e
+var fe = (1 - sqrtE) / (1 + sqrtE)
+var fe2 = fe * fe
+var fe3 = fe2 * fe
+var fe4 = fe3 * fe
+var fe5 = fe4 * fe
 
-var m1 = (1 - e/4 - 3*e2/64 - 5*e3/256)
-var m2 = (3*e/8 + 3*e2/32 + 45*e3/1024)
-var m3 = (15*e2/256 + 45*e3/1024)
-var m4 = (35 * e3 / 3072)
+var m1 = 1 - e/4 - 3*e2/64 - 5*e3/256
+var m2 = 3*e/8 + 3*e2/32 + 45*e3/1024
+var m3 = 15*e2/256 + 45*e3/1024
+var m4 = 35 * e3 / 3072
 
-var p2 = (3./2*_e - 27./32*_e3 + 269./512*_e5)
-var p3 = (21./16*_e2 - 55./32*_e4)
-var p4 = (151./96*_e3 - 417./128*_e5)
-var p5 = (1097. / 512 * _e4)
+var p2 = 3./2*fe - 27./32*fe3 + 269./512*fe5
+var p3 = 21./16*fe2 - 55./32*fe4
+var p4 = 151./96*fe3 - 417./128*fe5
+var p5 = 1097. / 512 * fe4
 
-type zone_letter struct {
+type zoneLetter struct {
 	zone   int
 	letter string
 }
@@ -45,7 +45,7 @@ const x = math.Pi / 180
 func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
 
-var zone_letters = []zone_letter{
+var zoneLetters = []zoneLetter{
 	{84, " "},
 	{72, "X"},
 	{64, "W"},
@@ -107,7 +107,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 			err = inputError("zone letter out of range (must be between C and X)")
 			return
 		}
-		northernValue = (zoneLetter >= 'N')
+		northernValue = zoneLetter >= 'N'
 	} else {
 		northernValue = northern[0]
 	}
@@ -122,28 +122,28 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	m := y / k0
 	mu := m / (r * m1)
 
-	p_rad := (mu +
+	pRad := mu +
 		p2*math.Sin(2*mu) +
 		p3*math.Sin(4*mu) +
 		p4*math.Sin(6*mu) +
-		p5*math.Sin(8*mu))
+		p5*math.Sin(8*mu)
 
-	p_sin := math.Sin(p_rad)
-	p_sin2 := p_sin * p_sin
+	pSin := math.Sin(pRad)
+	pSin2 := pSin * pSin
 
-	p_cos := math.Cos(p_rad)
+	pCos := math.Cos(pRad)
 
-	p_tan := p_sin / p_cos
-	p_tan2 := p_tan * p_tan
-	p_tan4 := p_tan2 * p_tan2
+	pTan := pSin / pCos
+	pTan2 := pTan * pTan
+	pTan4 := pTan2 * pTan2
 
-	ep_sin := 1 - e*p_sin2
-	ep_sin_sqrt := math.Sqrt(1 - e*p_sin2)
+	epSin := 1 - e*pSin2
+	epSinSqrt := math.Sqrt(1 - e*pSin2)
 
-	n := r / ep_sin_sqrt
-	rad := (1 - e) / ep_sin
+	n := r / epSinSqrt
+	rad := (1 - e) / epSin
 
-	c := _e * p_cos * p_cos
+	c := fe * pCos * pCos
 	c2 := c * c
 
 	d := x / (n * k0)
@@ -153,17 +153,17 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	d5 := d4 * d
 	d6 := d5 * d
 
-	latitude = (p_rad - (p_tan / rad) *
+	latitude = pRad - (pTan / rad) *
 		(d2/2 -
-			d4/24*(5+3*p_tan2+10*c-4*c2-9*e_p2)) +
-		d6/720*(61+90*p_tan2+298*c+45*p_tan4-252*e_p2-3*c2))
+			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)) +
+		d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2)
 
 	longitude = (d -
-		d3/6*(1+2*p_tan2+c) +
-		d5/120*(5-2*c+28*p_tan2-3*c2+8*e_p2+24*p_tan4)) / p_cos
+		d3/6*(1+2*pTan2+c) +
+		d5/120*(5-2*c+28*pTan2-3*c2+8*eP2+24*pTan4)) / pCos
 
 	latitude = deg(latitude)
-	longitude = deg(longitude) + float64(zone_number_to_central_longitude(zoneNumber))
+	longitude = deg(longitude) + float64(zoneNumberToCentralLongitude(zoneNumber))
 
 	return
 
@@ -188,17 +188,17 @@ func FromLatLon(latitude, longitude float64, northern bool) (easting, northing f
 		return
 	}
 
-	lat_rad := rad(latitude)
-	lat_sin := math.Sin(lat_rad)
-	lat_cos := math.Cos(lat_rad)
+	latRad := rad(latitude)
+	latSin := math.Sin(latRad)
+	latCos := math.Cos(latRad)
 
-	lat_tan := lat_sin / lat_cos
-	lat_tan2 := lat_tan * lat_tan
-	lat_tan4 := lat_tan2 * lat_tan2
+	latTan := latSin / latCos
+	latTan2 := latTan * latTan
+	latTan4 := latTan2 * latTan2
 
-	zoneNumber = latlon_to_zone_number(latitude, longitude)
+	zoneNumber = latlonToZoneNumber(latitude, longitude)
 
-	zoneLetter = latitude_to_zone_letter(latitude)
+	zoneLetter = latitudeToZoneLetter(latitude)
 
 	if northern {
 		// N north, S south
@@ -209,29 +209,29 @@ func FromLatLon(latitude, longitude float64, northern bool) (easting, northing f
 		}
 	}
 
-	lon_rad := rad(longitude)
-	central_lon := zone_number_to_central_longitude(zoneNumber)
-	central_lon_rad := rad(float64(central_lon))
+	lonRad := rad(longitude)
+	centralLon := zoneNumberToCentralLongitude(zoneNumber)
+	centralLonRad := rad(float64(centralLon))
 
-	n := r / math.Sqrt(1-e*lat_sin*lat_sin)
-	c := e_p2 * lat_cos * lat_cos
+	n := r / math.Sqrt(1-e*latSin*latSin)
+	c := eP2 * latCos * latCos
 
-	a := lat_cos * (lon_rad - central_lon_rad)
+	a := latCos * (lonRad - centralLonRad)
 	a2 := a * a
 	a3 := a2 * a
 	a4 := a3 * a
 	a5 := a4 * a
 	a6 := a5 * a
-	m := r * (m1*lat_rad -
-		m2*math.Sin(2*lat_rad) +
-		m3*math.Sin(4*lat_rad) -
-		m4*math.Sin(6*lat_rad))
+	m := r * (m1*latRad -
+		m2*math.Sin(2*latRad) +
+		m3*math.Sin(4*latRad) -
+		m4*math.Sin(6*latRad))
 	easting = k0*n * (a +
-		a3/6*(1-lat_tan2+c) +
-		a5/120*(5-18*lat_tan2+lat_tan4+72*c-58*e_p2)) + 500000
-	northing = k0 * (m + n*lat_tan * (a2/2 +
-		a4/24*(5-lat_tan2+9*c+4*c*c) +
-		a6/720*(61-58*lat_tan2+lat_tan4+600*c-330*e_p2)))
+		a3/6*(1-latTan2+c) +
+		a5/120*(5-18*latTan2+latTan4+72*c-58*eP2)) + 500000
+	northing = k0 * (m + n*latTan * (a2/2 +
+		a4/24*(5-latTan2+9*c+4*c*c) +
+		a6/720*(61-58*latTan2+latTan4+600*c-330*eP2)))
 
 	if latitude < 0 {
 		northing += 10000000
@@ -240,16 +240,16 @@ func FromLatLon(latitude, longitude float64, northern bool) (easting, northing f
 	return
 }
 
-func latitude_to_zone_letter(latitude float64) string {
-	for _, zone_letter := range zone_letters {
-		if latitude >= float64(zone_letter.zone) {
-			return zone_letter.letter
+func latitudeToZoneLetter(latitude float64) string {
+	for _, zoneLetter := range zoneLetters {
+		if latitude >= float64(zoneLetter.zone) {
+			return zoneLetter.letter
 		}
 	}
 	return " "
 }
 
-func latlon_to_zone_number(latitude float64, longitude float64) int {
+func latlonToZoneNumber(latitude float64, longitude float64) int {
 	if 56 <= latitude && latitude <= 64 && 3 <= longitude && longitude <= 12 {
 		return 32
 	}
@@ -269,8 +269,8 @@ func latlon_to_zone_number(latitude float64, longitude float64) int {
 	return int((longitude+180)/6) + 1
 }
 
-func zone_number_to_central_longitude(zone_number int) int {
-	return (zone_number-1)*6 - 180 + 3
+func zoneNumberToCentralLongitude(zoneNumber int) int {
+	return (zoneNumber-1)*6 - 180 + 3
 }
 
 // InputError allow to distinguish if an error is from UTM conversion functions.

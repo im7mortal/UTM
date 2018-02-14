@@ -106,9 +106,8 @@ func TestToLatLonWithNorthern(t *testing.T) {
 }
 
 func TestFromLatLon(t *testing.T) {
-	var northern = false
 	for i, data := range knownValues {
-		easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude, northern)
+		easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude, false)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
