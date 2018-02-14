@@ -7,7 +7,7 @@ package UTM
 func FromLatLonF(lat, lon float64) (easting, northing float64) {
 	var err error
 	// Northing always false in this implementation.
-	easting, northing, _, _, err = LatLonToUTM(lat, lon, false)
+	easting, northing, _, _, err = FromLatLon(lat, lon, false)
 	if err != nil {
 		panic(err)
 	}
@@ -16,7 +16,7 @@ func FromLatLonF(lat, lon float64) (easting, northing float64) {
 
 //Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
 //
-// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
+// Deprecated: Use ToLatLon functions to convert LatLon instead.
 type Coordinate struct {
 	Easting    float64
 	Northing   float64
@@ -26,16 +26,16 @@ type Coordinate struct {
 
 // FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
 //
-// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
+// Deprecated: Use FromLatLon functions to convert LatLon instead.
 func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	// Northing always false in this implementation.
-	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = LatLonToUTM(point.Latitude, point.Longitude, false)
+	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = FromLatLon(point.Latitude, point.Longitude, false)
 	return
 }
 
 //LatLon contains a latitude and longitude
 //
-// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
+// Deprecated: Use FromLatLon functions to convert LatLon instead.
 type LatLon struct {
 	Latitude  float64
 	Longitude float64
@@ -47,10 +47,10 @@ type LatLon struct {
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 //
-// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
+// Deprecated: Use ToLatLon functions to convert LatLon instead.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
-	latitude, longitude, err := UTMToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
+	latitude, longitude, err := ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
 	return LatLon{latitude, longitude}, err
 
 }

@@ -62,7 +62,7 @@ var knownValues = []testData{
 
 func TestToLatLon(t *testing.T) {
 	for i, data := range knownValues {
-		latitude, longitude, err := UTM.UTMToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter)
+		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
@@ -80,7 +80,7 @@ func TestToLatLon(t *testing.T) {
 func TestToLatLonWithNorthern(t *testing.T) {
 	var emptyZoneLetter = ""
 	for i, data := range knownValues {
-		latitude, longitude, err := UTM.UTMToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, emptyZoneLetter, data.northern)
+		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, emptyZoneLetter, data.northern)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
@@ -96,7 +96,7 @@ func TestToLatLonWithNorthern(t *testing.T) {
 func TestFromLatLon(t *testing.T) {
 	var northern = false
 	for i, data := range knownValues {
-		easting, northing, zoneNumber, zoneLetter, err := UTM.LatLonToUTM(data.LatLon.Latitude, data.LatLon.Longitude, northern)
+		easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude, northern)
 		if err != nil {
 			t.Fatal(err.Error())
 		}

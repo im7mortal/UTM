@@ -74,7 +74,7 @@ var zone_letters = []zone_letter{
 // the ``northern`` parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
-func UTMToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
+func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
 
 	nothernExist := len(northern) > 0
 	zoneLetterExist := !(zoneLetter == "")
@@ -181,7 +181,7 @@ func IsLatLonValid(latitude, longitude float64) error {
 }
 
 // FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+func FromLatLon(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
 	// check that latitude and longitude are valid
 	err = IsLatLonValid(latitude, longitude)
 	if err != nil {
