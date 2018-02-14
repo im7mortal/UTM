@@ -139,6 +139,9 @@ func TestFromLatLonBadInput(t *testing.T) {
 		if err == nil {
 			t.Errorf("Expected error. badInputLatLon TestFromLatLonBadInput case %d", i)
 		}
+		if _, ok := err.(UTM.InputError); !ok {
+			t.Error("Type of error must be UTM.InputError.")
+		}
 	}
 	latLon := testLatLon{}
 	latLon.Longitude = 0
@@ -185,6 +188,9 @@ func TestToLatLonBadInput(t *testing.T) {
 		if err == nil {
 			t.Errorf("Expected error. badInputToLatLon TestToLatLonBadInput case %d", i)
 		}
+		if _, ok := err.(UTM.InputError); !ok {
+			t.Error("Type of error must be UTM.InputError.")
+		}
 	}
 	coordinate := testCoordinate{
 		Easting:    377486,
@@ -195,10 +201,16 @@ func TestToLatLonBadInput(t *testing.T) {
 	if err == nil {
 		t.Error("Expected error. too few arguments")
 	}
+	if _, ok := err.(UTM.InputError); !ok {
+		t.Error("Type of error must be UTM.InputError.")
+	}
 	coordinate.ZoneLetter = "V"
 	_, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, true)
 	if err == nil {
 		t.Error("Expected error. too many arguments")
+	}
+	if _, ok := err.(UTM.InputError); !ok {
+		t.Error("Type of error must be UTM.InputError.")
 	}
 	letters := []string{
 		"X", "W", "V", "U", "T", "S", "R", "Q", "P", "N", "M", "L", "K", "J", "H", "G", "F", "E", "D", "C",
