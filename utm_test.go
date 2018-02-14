@@ -62,6 +62,24 @@ var knownValues = []testData{
 
 func TestToLatLon(t *testing.T) {
 	for i, data := range knownValues {
+		latitude, longitude, err := UTM.UTMToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter)
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		if round(data.LatLon.Latitude) != round(latitude) {
+			println(round(data.LatLon.Latitude), round(latitude))
+			t.Errorf("Latitude ToLatLon case %d", i)
+		}
+		if round(data.LatLon.Longitude) != round(longitude) {
+			println(round(data.LatLon.Longitude), round(longitude))
+			t.Errorf("Longitude ToLatLon case %d", i)
+		}
+	}
+}
+
+
+func TestToLatLonDeprecated(t *testing.T) {
+	for i, data := range knownValues {
 		result, err := data.UTM.ToLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
@@ -76,6 +94,22 @@ func TestToLatLon(t *testing.T) {
 }
 
 func TestToLatLonWithNorthern(t *testing.T) {
+	for i, data := range knownValues {
+		latitude, longitude, err := UTM.UTMToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter, data.northern)
+		if err != nil {
+			println("FATAL")
+			t.Fatal(err.Error())
+		}
+		if round(data.LatLon.Latitude) != round(latitude) {
+			t.Errorf("Latitude TestToLatLonWithNorthern case %d", i)
+		}
+		if round(data.LatLon.Longitude) != round(longitude) {
+			t.Errorf("Longitude TestToLatLonWithNorthern case %d", i)
+		}
+	}
+}
+
+func TestToLatLonWithDeprecated(t *testing.T) {
 	for i, data := range knownValues {
 		UTMwithNorthern := UTM.Coordinate{
 			Easting:    data.UTM.Easting,

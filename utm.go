@@ -181,6 +181,102 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 }
 
+// ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
+// Since the zone letter is not strictly needed for the conversion you may also
+// the ``northern`` parameter instead, which is a named parameter and can be set
+// to either true or false. In this case you should define fields clearly
+// You can't set ZoneLetter or northern both.
+func UTMToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
+
+	nothernExist := len(northern) > 0
+	zoneLetterExist := !(zoneLetter == "")
+
+	if !zoneLetterExist && !nothernExist {
+		err = inputError("either ZoneLetter or northern needs to be set")
+		return
+	} else if zoneLetterExist && nothernExist {
+		err = inputError("set either ZoneLetter or northern, but not both")
+		return
+	}
+	if !(100000 <= easting && easting < 1000000) {
+		err = inputError("easting out of range (must be between 100.000 m and 999.999 m")
+		return
+	}
+	if !(0 <= northing && northing <= 10000000) {
+		err = inputError("northing out of range (must be between 0 m and 10.000.000 m)")
+		return
+	}
+	if !(1 <= zoneNumber && zoneNumber <= 60) {
+		err = inputError("zone number out of range (must be between 1 and 60)")
+		return
+	}
+
+	var northernValue bool
+
+	if zoneLetterExist {
+		zoneLetter := unicode.ToUpper(rune(zoneLetter[0]))
+		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
+			err = inputError("zone letter out of range (must be between C and X)")
+			return
+		}
+		northernValue = (zoneLetter >= 'N')
+	} else {
+		northernValue = northern[0]
+	}
+
+	x := easting - 500000
+	y := northing
+
+	if !northernValue {
+		y -= 10000000
+	}
+
+	m := y / k0
+	mu := m / (r * m1)
+
+	p_rad := (mu +
+		p2*math.Sin(2*mu) +
+		p3*math.Sin(4*mu) +
+		p4*math.Sin(6*mu) +
+		p5*math.Sin(8*mu))
+
+	p_sin := math.Sin(p_rad)
+	p_sin2 := p_sin * p_sin
+
+	p_cos := math.Cos(p_rad)
+
+	p_tan := p_sin / p_cos
+	p_tan2 := p_tan * p_tan
+	p_tan4 := p_tan2 * p_tan2
+
+	ep_sin := 1 - e*p_sin2
+	ep_sin_sqrt := math.Sqrt(1 - e*p_sin2)
+
+	n := r / ep_sin_sqrt
+	rad := (1 - e) / ep_sin
+
+	c := _e * p_cos * p_cos
+	c2 := c * c
+
+	d := x / (n * k0)
+	d2 := d * d
+	d3 := d2 * d
+	d4 := d3 * d
+	d5 := d4 * d
+	d6 := d5 * d
+
+	latitude = (p_rad - (p_tan / rad) *
+		(d2/2 -
+			d4/24*(5+3*p_tan2+10*c-4*c2-9*e_p2)) +
+		d6/720*(61+90*p_tan2+298*c+45*p_tan4-252*e_p2-3*c2))
+
+	longitude = (d -
+		d3/6*(1+2*p_tan2+c) +
+		d5/120*(5-2*c+28*p_tan2-3*c2+8*e_p2+24*p_tan4)) / p_cos
+	return
+
+}
+
 // IsLatLonValid check that latitude and longitude are valid.
 func IsLatLonValid(latitude, longitude float64) error {
 	if !(-80.0 <= latitude && latitude <= 84.0) {
