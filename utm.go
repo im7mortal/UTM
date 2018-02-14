@@ -69,38 +69,6 @@ var zone_letters = []zone_letter{
 	{-80, "C"},
 }
 
-//Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
-//
-// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
-type Coordinate struct {
-	Easting    float64
-	Northing   float64
-	ZoneNumber int
-	ZoneLetter string
-}
-
-//LatLon contains a latitude and longitude
-//
-// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
-type LatLon struct {
-	Latitude  float64
-	Longitude float64
-}
-
-// ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
-// Since the zone letter is not strictly needed for the conversion you may also
-// the ``northern`` parameter instead, which is a named parameter and can be set
-// to either true or false. In this case you should define fields clearly
-// You can't set ZoneLetter or northern both.
-//
-// Deprecated: Use UTMToLatLon functions to convert LatLon instead.
-func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
-
-	latitude, longitude, err := UTMToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
-	return LatLon{latitude, longitude}, err
-
-}
-
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
 // the ``northern`` parameter instead, which is a named parameter and can be set
@@ -269,15 +237,6 @@ func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing 
 		northing += 10000000
 	}
 
-	return
-}
-
-// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-//
-// Deprecated: Use LatLonToUTM functions to convert LatLon instead.
-func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
-	// Northing always false in this implementation.
-	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = LatLonToUTM(point.Latitude, point.Longitude, false)
 	return
 }
 
