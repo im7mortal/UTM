@@ -273,6 +273,10 @@ func UTMToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, n
 	longitude = (d -
 		d3/6*(1+2*p_tan2+c) +
 		d5/120*(5-2*c+28*p_tan2-3*c2+8*e_p2+24*p_tan4)) / p_cos
+
+	latitude = deg(latitude)
+	longitude = deg(longitude) + float64(zone_number_to_central_longitude(zoneNumber))
+
 	return
 
 }
