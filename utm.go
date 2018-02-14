@@ -76,13 +76,13 @@ var zoneLetters = []zoneLetter{
 // You can't set ZoneLetter or northern both.
 func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
 
-	nothernExist := len(northern) > 0
+	northernExist := len(northern) > 0
 	zoneLetterExist := !(zoneLetter == "")
 
-	if !zoneLetterExist && !nothernExist {
+	if !zoneLetterExist && !northernExist {
 		err = inputError("either ZoneLetter or northern needs to be set")
 		return
-	} else if zoneLetterExist && nothernExist {
+	} else if zoneLetterExist && northernExist {
 		err = inputError("set either ZoneLetter or northern, but not both")
 		return
 	}
@@ -196,7 +196,7 @@ func FromLatLon(latitude, longitude float64, northern bool) (easting, northing f
 	latTan2 := latTan * latTan
 	latTan4 := latTan2 * latTan2
 
-	zoneNumber = latlonToZoneNumber(latitude, longitude)
+	zoneNumber = latLonToZoneNumber(latitude, longitude)
 
 	zoneLetter = latitudeToZoneLetter(latitude)
 
@@ -249,7 +249,7 @@ func latitudeToZoneLetter(latitude float64) string {
 	return " "
 }
 
-func latlonToZoneNumber(latitude float64, longitude float64) int {
+func latLonToZoneNumber(latitude float64, longitude float64) int {
 	if 56 <= latitude && latitude <= 64 && 3 <= longitude && longitude <= 12 {
 		return 32
 	}
