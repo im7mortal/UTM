@@ -7,43 +7,36 @@ import (
 
 func main() {
 
-	latLon := UTM.LatLon{
-		Latitude: 40.71435,
-		Longitude: -74.00597,
-	}
-	result, err := latLon.FromLatLon()
+	easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(40.71435, -74.00597, false)
 	if err != nil {
 		panic(err.Error())
 	}
 	fmt.Println(
 		fmt.Sprintf(
 			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
-			result.Easting,
-			result.Northing,
-			result.ZoneNumber,
-			result.ZoneLetter,
+			easting,
+			northing,
+			zoneNumber,
+			zoneLetter,
 		))
 
-	coordinateUTM := UTM.Coordinate{
-		Easting :        377486,
-		Northing :        6296562,
-		ZoneNumber :    30,
+	easting, northing, zoneNumber, zoneLetter, err = UTM.FromLatLon(40.71435, -74.00597, true)
+	if err != nil {
+		panic(err.Error())
 	}
+	fmt.Println(
+		fmt.Sprintf(
+			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			easting,
+			northing,
+			zoneNumber,
+			zoneLetter,
+		))
 
-	result1, err1 := coordinateUTM.ToLatLon(true)
+	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "", true)
+	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", latitude, longitude))
 
-	if err1 != nil {
-		panic(err1.Error())
-	}
-
-	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", result1.Latitude, result1.Longitude))
-
-	coordinateUTM.ZoneLetter = "V"
-
-	result2, err2 := coordinateUTM.ToLatLon()
-	if err2 != nil {
-		panic(err2.Error())
-	}
-	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", result2.Latitude, result2.Longitude))
+	latitude, longitude, err = UTM.ToLatLon(377486, 6296562, 30, "V")
+	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", latitude, longitude))
 
 }

@@ -5,47 +5,32 @@
 UTM
 ===
 
-Bidirectional UTM-WGS84 converter for golang. It's port from [UTM python version](https://pypi.python.org/pypi/utm) by Tobias Bieniek
+Bidirectional UTM-WGS84 converter for golang. It use logic from [UTM python version](https://pypi.python.org/pypi/utm) by Tobias Bieniek
 
 Usage
 -----
 
 	go get github.com/im7mortal/UTM
 
-Convert a (latitude, longitude) tuple into an UTM coordinate
+Convert a latitude, longitude into an UTM coordinate
 
+```go
+	easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(40.71435, -74.00597, false)
 ```
-	import "github.com/im7mortal/UTM"
-	latLon := UTM.LatLon{50.77535, 6.08389}
-	Coordinate, err := latLon.FromLatLon()
+
+Convert an UTM coordinate into a latitude, longitude.
+
+```go
+	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "V")
 ```
-The return has the form
-
-	Coordinate{294409, 5628898, 32, "U"}
-
-Convert a (latitude, longitude) tuple into an UTM coordinate
-
-```
-	coordinate := UTM.Coordinate{294409, 5628898, 32, "U"}
-	latLon, err := coordinate.ToLatLon()
-```
-The return has the form
-
-	LatLon{50.77535, 6.08389}
-	
 
 Since the zone letter is not strictly needed for the conversion you may also
 the ``northern`` parameter instead, which is a named parameter and can be set
 to either ``true`` or ``false``. In this case you should define fields clearly(!).
 You can't set ZoneLetter or northern both.
 
-```
-	coordinate := UTM.Coordinate{
-			Easting :		313784,
-			Northing :		5427057,
-			ZoneNumber :	60,
-		}
-	latLon, err := coordinate.ToLatLon(false)
+```go
+	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "", false)
 ```
 
 The UTM coordinate system is explained on this [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
@@ -61,11 +46,9 @@ FromLatLon            | 20000000             | 80.6 ns/op
 
 > go test -bench=.
 
-Data for comparison in oldBenchmark.txt
-
 Full example
 -----------
-```
+```go
 package main
 
 import (
@@ -75,46 +58,40 @@ import (
 
 func main() {
 
-	latLon := UTM.LatLon{
-		Latitude: 40.71435,
-		Longitude: -74.00597,
-	}
-	result, err := latLon.FromLatLon()
+	easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(40.71435, -74.00597, false)
 	if err != nil {
 		panic(err.Error())
 	}
 	fmt.Println(
 		fmt.Sprintf(
 			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
-			result.Easting,
-			result.Northing,
-			result.ZoneNumber,
-			result.ZoneLetter,
+			easting,
+			northing,
+			zoneNumber,
+			zoneLetter,
 		))
 
-	coordinateUTM := UTM.Coordinate{
-		Easting :        377486,
-		Northing :        6296562,
-		ZoneNumber :    30,
+	easting, northing, zoneNumber, zoneLetter, err = UTM.FromLatLon(40.71435, -74.00597, true)
+	if err != nil {
+		panic(err.Error())
 	}
+	fmt.Println(
+		fmt.Sprintf(
+			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			easting,
+			northing,
+			zoneNumber,
+			zoneLetter,
+		))
 
-	result1, err1 := coordinateUTM.ToLatLon(true)
+	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "", true)
+	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", latitude, longitude))
 
-	if err1 != nil {
-		panic(err1.Error())
-	}
-
-	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", result1.Latitude, result1.Longitude))
-
-	coordinateUTM.ZoneLetter = "V"
-
-	result2, err2 := coordinateUTM.ToLatLon()
-	if err2 != nil {
-		panic(err2.Error())
-	}
-	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", result2.Latitude, result2.Longitude))
+	latitude, longitude, err = UTM.ToLatLon(377486, 6296562, 30, "V")
+	fmt.Println(fmt.Sprintf("Latitude: %.5f; Longitude: %.5f;", latitude, longitude))
 
 }
+
 ```
 
 Authors
