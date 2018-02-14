@@ -181,7 +181,72 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 }
 
-//FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+	if !(-80.0 <= latitude && latitude <= 84.0) {
+		err = errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
+		return
+	}
+	if !(-180.0 <= longitude && longitude <= 180.0) {
+		err = errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
+		return
+	}
+
+	lat_rad := rad(latitude)
+	lat_sin := math.Sin(lat_rad)
+	lat_cos := math.Cos(lat_rad)
+
+	lat_tan := lat_sin / lat_cos
+	lat_tan2 := lat_tan * lat_tan
+	lat_tan4 := lat_tan2 * lat_tan2
+
+	zoneNumber = latlon_to_zone_number(latitude, longitude)
+
+	zoneLetter = latitude_to_zone_letter(latitude)
+
+	if northern {
+		// N north, S south
+		if latitude > 0 {
+			zoneLetter = "N"
+		} else {
+			zoneLetter = "S"
+		}
+	}
+
+	lon_rad := rad(longitude)
+	central_lon := zone_number_to_central_longitude(zoneNumber)
+	central_lon_rad := rad(float64(central_lon))
+
+	n := r / math.Sqrt(1-e*lat_sin*lat_sin)
+	c := e_p2 * lat_cos * lat_cos
+
+	a := lat_cos * (lon_rad - central_lon_rad)
+	a2 := a * a
+	a3 := a2 * a
+	a4 := a3 * a
+	a5 := a4 * a
+	a6 := a5 * a
+	m := r * (m1*lat_rad -
+		m2*math.Sin(2*lat_rad) +
+		m3*math.Sin(4*lat_rad) -
+		m4*math.Sin(6*lat_rad))
+	easting = k0*n * (a +
+		a3/6*(1-lat_tan2+c) +
+		a5/120*(5-18*lat_tan2+lat_tan4+72*c-58*e_p2)) + 500000
+	northing = k0 * (m + n*lat_tan * (a2/2 +
+		a4/24*(5-lat_tan2+9*c+4*c*c) +
+		a6/720*(61-58*lat_tan2+lat_tan4+600*c-330*e_p2)))
+
+	if latitude < 0 {
+		northing += 10000000
+	}
+
+	return
+}
+
+// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+//
+// Deprecated: Use FromLatLon functions to converse instead.
 func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	if !(-80.0 <= point.Latitude && point.Latitude <= 84.0) {
 		err = inputError("latitude out of range (must be between 80 deg S and 84 deg N)")

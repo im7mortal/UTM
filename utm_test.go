@@ -97,6 +97,28 @@ func TestToLatLonWithNorthern(t *testing.T) {
 }
 
 func TestFromLatLon(t *testing.T) {
+	var northern = false
+	for i, data := range knownValues {
+		easting, northing, zoneNumber, zoneLetter, err := UTM.LatLonToUTM(data.LatLon.Latitude, data.LatLon.Longitude, northern)
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		if round(data.UTM.Easting) != round(easting) {
+			t.Errorf("Easting FromLatLon case %d", i)
+		}
+		if round(data.UTM.Northing) != round(northing) {
+			t.Errorf("Northing FromLatLon case %d", i)
+		}
+		if data.UTM.ZoneLetter != zoneLetter {
+			t.Errorf("ZoneLetter FromLatLon case %d", i)
+		}
+		if data.UTM.ZoneNumber != zoneNumber {
+			t.Errorf("ZoneNumber FromLatLon case %d", i)
+		}
+	}
+}
+
+func TestFromLatLonDeprecated(t *testing.T) {
 
 	for i, data := range knownValues {
 		result, err := data.LatLon.FromLatLon()
