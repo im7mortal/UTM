@@ -181,14 +181,22 @@ func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
 
 }
 
-// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+// IsLatLonValid check that latitude and longitude are valid.
+func IsLatLonValid(latitude, longitude float64) error {
 	if !(-80.0 <= latitude && latitude <= 84.0) {
-		err = errors.New("latitude out of range (must be between 80 deg S and 84 deg N)")
-		return
+		return inputError("latitude out of range (must be between 80 deg S and 84 deg N)")
 	}
 	if !(-180.0 <= longitude && longitude <= 180.0) {
-		err = errors.New("longitude out of range (must be between 180 deg W and 180 deg E)")
+		return inputError("longitude out of range (must be between 180 deg W and 180 deg E)")
+	}
+	return nil
+}
+
+// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+func LatLonToUTM(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+	// check that latitude and longitude are valid
+	err = IsLatLonValid(latitude, longitude)
+	if err != nil {
 		return
 	}
 
