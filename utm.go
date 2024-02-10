@@ -255,13 +255,13 @@ func latLonToZoneNumber(latitude float64, longitude float64) int {
 	}
 
 	if 72 <= latitude && latitude <= 84 && longitude >= 0 {
-		if longitude <= 9 {
+		if longitude < 9 {
 			return 31
-		} else if longitude <= 21 {
+		} else if longitude < 21 {
 			return 33
-		} else if longitude <= 33 {
+		} else if longitude < 33 {
 			return 35
-		} else if longitude <= 42 {
+		} else if longitude < 42 {
 			return 37
 		}
 	}
