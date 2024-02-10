@@ -143,7 +143,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	n := r / epSinSqrt
 	rad := (1 - e) / epSin
 
-	c := fe * pCos * pCos
+	c := eP2 * pCos * pCos
 	c2 := c * c
 
 	d := x / (n * k0)
