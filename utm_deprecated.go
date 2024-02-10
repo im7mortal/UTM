@@ -1,7 +1,7 @@
 package UTM
 
-// Don't use it. It panic and return no error.
 // FromLatLonF convert a latitude and longitude to Universal Transverse Mercator coordinates.
+// Don't use it. It panics and return no error.
 //
 // Deprecated: Use FromLatLon functions to converse instead.
 func FromLatLonF(lat, lon float64) (easting, northing float64) {
@@ -43,7 +43,7 @@ type LatLon struct {
 
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
-// the “northern“ parameter instead, which is a named parameter and can be set
+// the "northern" parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 //

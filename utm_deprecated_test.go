@@ -143,13 +143,13 @@ func TestToLatLonDeprecated(t *testing.T) {
 
 func TestToLatLonWithDeprecated(t *testing.T) {
 	for i, data := range getTestValuesDeprecated() {
-		UTMwithNorthern := UTM.Coordinate{
+		UTMWithNorthern := UTM.Coordinate{
 			Easting:    data.UTM.Easting,
 			Northing:   data.UTM.Northing,
 			ZoneNumber: data.UTM.ZoneNumber,
 		}
 
-		result, err := UTMwithNorthern.ToLatLon(data.northern)
+		result, err := UTMWithNorthern.ToLatLon(data.northern)
 		if err != nil {
 			t.Fatal(err.Error())
 		}

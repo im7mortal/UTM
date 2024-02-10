@@ -71,7 +71,7 @@ var zoneLetters = []zoneLetter{
 
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
-// the “northern“ parameter instead, which is a named parameter and can be set
+// the "northern" parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
