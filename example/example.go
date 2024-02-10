@@ -13,7 +13,7 @@ func main() {
 	}
 	fmt.Println(
 		fmt.Sprintf(
-			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;",
 			easting,
 			northing,
 			zoneNumber,
@@ -26,7 +26,7 @@ func main() {
 	}
 	fmt.Println(
 		fmt.Sprintf(
-			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;",
 			easting,
 			northing,
 			zoneNumber,
