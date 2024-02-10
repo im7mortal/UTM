@@ -11,6 +11,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	fmt.Printf(
 		"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;\n",
 		easting,
@@ -23,6 +24,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	fmt.Printf(
 		"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;\n",
 		easting,

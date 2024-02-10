@@ -15,7 +15,7 @@ type testLatLon struct {
 	Longitude float64
 }
 
-// emulation for test only
+// emulation for test only.
 type testCoordinate struct {
 	Easting    float64
 	Northing   float64
@@ -83,14 +83,22 @@ func getTestValues() []testData {
 }
 
 func TestToLatLon(t *testing.T) {
+	t.Parallel()
+
 	for i, data := range getTestValues() {
-		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter)
+		latitude, longitude, err := UTM.ToLatLon(
+			data.UTM.Easting,
+			data.UTM.Northing,
+			data.UTM.ZoneNumber,
+			data.UTM.ZoneLetter)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
+
 		if round(data.LatLon.Latitude) != round(latitude) {
 			t.Errorf("Latitude ToLatLon case %d", i)
 		}
+
 		if round(data.LatLon.Longitude) != round(longitude) {
 			t.Errorf("Longitude ToLatLon case %d", i)
 		}
@@ -98,15 +106,25 @@ func TestToLatLon(t *testing.T) {
 }
 
 func TestToLatLonWithNorthern(t *testing.T) {
+	t.Parallel()
+
 	emptyZoneLetter := ""
+
 	for i, data := range getTestValues() {
-		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, emptyZoneLetter, data.northern)
+		latitude, longitude, err := UTM.ToLatLon(
+			data.UTM.Easting,
+			data.UTM.Northing,
+			data.UTM.ZoneNumber,
+			emptyZoneLetter,
+			data.northern)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
+
 		if round(data.LatLon.Latitude) != round(latitude) {
 			t.Errorf("Latitude TestToLatLonWithNorthern case %d", i)
 		}
+
 		if round(data.LatLon.Longitude) != round(longitude) {
 			t.Errorf("Longitude TestToLatLonWithNorthern case %d", i)
 		}
@@ -114,20 +132,26 @@ func TestToLatLonWithNorthern(t *testing.T) {
 }
 
 func TestFromLatLon(t *testing.T) {
+	t.Parallel()
+
 	for i, data := range getTestValues() {
 		easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude, false)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
+
 		if round(data.UTM.Easting) != round(easting) {
 			t.Errorf("Easting FromLatLon case %d", i)
 		}
+
 		if round(data.UTM.Northing) != round(northing) {
 			t.Errorf("Northing FromLatLon case %d", i)
 		}
+
 		if data.UTM.ZoneLetter != zoneLetter {
 			t.Errorf("ZoneLetter FromLatLon case %d", i)
 		}
+
 		if data.UTM.ZoneNumber != zoneNumber {
 			t.Errorf("ZoneNumber FromLatLon case %d", i)
 		}
@@ -144,6 +168,8 @@ func getBadInputLatLon() []testLatLon {
 }
 
 func TestFromLatLonBadInput(t *testing.T) {
+	t.Parallel()
+
 	for i, data := range getBadInputLatLon() {
 		_, _, _, _, err := UTM.FromLatLon(data.Latitude, data.Longitude, false)
 		if err == nil {
@@ -153,8 +179,10 @@ func TestFromLatLonBadInput(t *testing.T) {
 			t.Error("Type of error must be UTM.InputError.")
 		}
 	}
+
 	latLon := testLatLon{}
 	latLon.Longitude = 0
+
 	for i := -8000.0; i < 8401.0; i++ {
 		latLon.Latitude = i / 100
 		_, _, _, _, err := UTM.FromLatLon(latLon.Latitude, latLon.Longitude, false)
@@ -162,6 +190,7 @@ func TestFromLatLonBadInput(t *testing.T) {
 			t.Errorf("not cover Latitude %f", i/100)
 		}
 	}
+
 	latLon.Latitude = 0
 	for i := -18000.0; i < 18001.0; i++ {
 		latLon.Longitude = i / 100
@@ -194,6 +223,8 @@ func getBadInputToLatLon() []testCoordinate {
 }
 
 func TestToLatLonBadInput(t *testing.T) {
+	t.Parallel()
+
 	var err error
 	for i, data := range getBadInputToLatLon() {
 		_, _, err = UTM.ToLatLon(data.Easting, data.Northing, data.ZoneNumber, data.ZoneLetter)
@@ -204,11 +235,13 @@ func TestToLatLonBadInput(t *testing.T) {
 			t.Error("Type of error must be UTM.InputError.")
 		}
 	}
+
 	coordinate := testCoordinate{
 		Easting:    377486,
 		Northing:   6296562,
 		ZoneNumber: 30,
 	}
+
 	_, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, "")
 	if err == nil {
 		t.Error("Expected error. too few arguments")
@@ -216,7 +249,9 @@ func TestToLatLonBadInput(t *testing.T) {
 	if _, ok := err.(UTM.InputError); !ok {
 		t.Error("Type of error must be UTM.InputError.")
 	}
+
 	coordinate.ZoneLetter = "V"
+
 	_, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, true)
 	if err == nil {
 		t.Error("Expected error. too many arguments")
@@ -224,6 +259,7 @@ func TestToLatLonBadInput(t *testing.T) {
 	if _, ok := err.(UTM.InputError); !ok {
 		t.Error("Type of error must be UTM.InputError.")
 	}
+
 	letters := []string{
 		"X", "W", "V", "U", "T", "S", "R", "Q", "P", "N", "M", "L", "K", "J", "H", "G", "F", "E", "D", "C",
 		"x", "w", "v", "u", "t", "s", "r", "q", "p", "n", "m", "l", "k", "j", "h", "g", "f", "e", "d", "c",
@@ -231,6 +267,7 @@ func TestToLatLonBadInput(t *testing.T) {
 
 	for _, letter := range letters {
 		coordinate.ZoneLetter = letter
+
 		_, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter)
 		if err != nil {
 			t.Errorf("letter isn't covered. %s", letter)

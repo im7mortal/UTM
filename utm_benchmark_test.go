@@ -12,9 +12,14 @@ func getBenchmarkCoordinate() testCoordinate {
 
 func BenchmarkToLatLon(b *testing.B) {
 	var err error
+
 	coordinate := getBenchmarkCoordinate()
 	for i := 0; i < b.N; i++ {
-		if _, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter); err != nil {
+		if _, _, err = UTM.ToLatLon(
+			coordinate.Easting,
+			coordinate.Northing,
+			coordinate.ZoneNumber,
+			coordinate.ZoneLetter); err != nil {
 			b.Fatal("benchmark fatal BenchmarkToLatLon")
 		}
 	}
@@ -22,10 +27,17 @@ func BenchmarkToLatLon(b *testing.B) {
 
 func BenchmarkToLatLonWithNorthern(b *testing.B) {
 	var err error
+
 	coordinate := getBenchmarkCoordinate()
+
 	coordinate.ZoneLetter = ""
 	for i := 0; i < b.N; i++ {
-		if _, _, err = UTM.ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, true); err != nil {
+		if _, _, err = UTM.ToLatLon(
+			coordinate.Easting,
+			coordinate.Northing,
+			coordinate.ZoneNumber,
+			coordinate.ZoneLetter,
+			true); err != nil {
 			b.Fatal("benchmark fatal BenchmarkToLatLonWithNorthern")
 		}
 	}
@@ -37,7 +49,9 @@ func getLatLon() testLatLon {
 
 func BenchmarkFromLatLon(b *testing.B) {
 	var err error
+
 	latLon := getLatLon()
+
 	for i := 0; i < b.N; i++ {
 		if _, _, _, _, err = UTM.FromLatLon(latLon.Latitude, latLon.Longitude, false); err != nil {
 			b.Fatal("benchmark fatal BenchmarkFromLatLon")

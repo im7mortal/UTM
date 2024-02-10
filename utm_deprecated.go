@@ -29,7 +29,8 @@ type Coordinate struct {
 // Deprecated: Use FromLatLon functions to convert LatLon instead.
 func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	// Northing always false in this implementation.
-	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = FromLatLon(point.Latitude, point.Longitude, false)
+	coord.Easting, coord.Northing, coord.ZoneNumber, coord.ZoneLetter, err = FromLatLon(
+		point.Latitude, point.Longitude, false)
 	return
 }
 
@@ -49,6 +50,11 @@ type LatLon struct {
 //
 // Deprecated: Use ToLatLon functions to convert LatLon instead.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
-	latitude, longitude, err := ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
+	latitude, longitude, err := ToLatLon(
+		coordinate.Easting,
+		coordinate.Northing,
+		coordinate.ZoneNumber,
+		coordinate.ZoneLetter,
+		northern...)
 	return LatLon{latitude, longitude}, err
 }

@@ -82,7 +82,13 @@ var zoneLetters = []zoneLetterT{
 // the "northern" parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
-func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
+func ToLatLon(
+	easting, northing float64,
+	zoneNumber int,
+	zoneLetter string,
+	northern ...bool) (
+	latitude, longitude float64, err error,
+) {
 	northernExist := len(northern) > 0
 	zoneLetterExist := !(zoneLetter == "")
 
@@ -93,14 +99,17 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 		err = inputError("set either ZoneLetter or northern, but not both")
 		return
 	}
+
 	if !(100000 <= easting && easting < 1000000) {
 		err = inputError("easting out of range (must be between 100.000 m and 999.999 m")
 		return
 	}
+
 	if !(0 <= northing && northing <= 10000000) {
 		err = inputError("northing out of range (must be between 0 m and 10.000.000 m)")
 		return
 	}
+
 	if !(1 <= zoneNumber && zoneNumber <= 60) {
 		err = inputError("zone number out of range (must be between 1 and 60)")
 		return
@@ -187,7 +196,9 @@ func ValidateLatLone(latitude, longitude float64) error {
 }
 
 // FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates.
-func FromLatLon(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+func FromLatLon(latitude, longitude float64, northern bool) (
+	easting, northing float64, zoneNumber int, zoneLetter string, err error,
+) {
 	// check that latitude and longitude are valid
 	err = ValidateLatLone(latitude, longitude)
 	if err != nil {
