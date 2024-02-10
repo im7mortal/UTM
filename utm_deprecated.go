@@ -14,7 +14,7 @@ func FromLatLonF(lat, lon float64) (easting, northing float64) {
 	return
 }
 
-//Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
+// Coordinate contains coordinates in the Universal Transverse Mercator coordinate system
 //
 // Deprecated: Use ToLatLon functions to convert LatLon instead.
 type Coordinate struct {
@@ -33,7 +33,7 @@ func (point *LatLon) FromLatLon() (coord Coordinate, err error) {
 	return
 }
 
-//LatLon contains a latitude and longitude
+// LatLon contains a latitude and longitude
 //
 // Deprecated: Use FromLatLon functions to convert LatLon instead.
 type LatLon struct {
@@ -43,7 +43,7 @@ type LatLon struct {
 
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
-// the ``northern`` parameter instead, which is a named parameter and can be set
+// the “northern“ parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 //

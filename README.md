@@ -5,7 +5,8 @@
 UTM
 ===
 
-Bidirectional UTM-WGS84 converter for golang. It use logic from [UTM python version](https://pypi.python.org/pypi/utm) by Tobias Bieniek
+Bidirectional UTM-WGS84 converter for golang. It use logic from [UTM python version](https://pypi.python.org/pypi/utm)
+by Tobias Bieniek
 
 Usage
 -----
@@ -15,13 +16,13 @@ Usage
 Convert a latitude, longitude into an UTM coordinate
 
 ```go
-	easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(40.71435, -74.00597, false)
+    easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(40.71435, -74.00597, false)
 ```
 
 Convert an UTM coordinate into a latitude, longitude.
 
 ```go
-	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "V")
+    latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "V")
 ```
 
 Since the zone letter is not strictly needed for the conversion you may also
@@ -30,24 +31,26 @@ to either ``true`` or ``false``. In this case you should define fields clearly(!
 You can't set ZoneLetter or northern both.
 
 ```go
-	latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "", false)
+    latitude, longitude, err := UTM.ToLatLon(377486, 6296562, 30, "", false)
 ```
 
-The UTM coordinate system is explained on this [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
+The UTM coordinate system is explained on
+this [Wikipedia page](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system)
 
 Speed
 -----
 
-Benchmark             | Amount of iterations | Average speed
---------------------- | -------------------- | -------------
-ToLatLon              | 10000000             | 123 ns/op
-ToLatLonWithNorthern  | 10000000             | 121 ns/op
-FromLatLon            | 20000000             | 80.6 ns/op
+ Benchmark            | Amount of iterations | Average speed 
+----------------------|----------------------|---------------
+ ToLatLon             | 10000000             | 123 ns/op     
+ ToLatLonWithNorthern | 10000000             | 121 ns/op     
+ FromLatLon           | 20000000             | 80.6 ns/op    
 
 > go test -bench=.
 
 Full example
 -----------
+
 ```go
 package main
 

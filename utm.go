@@ -46,7 +46,7 @@ func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
 
 var zoneLetters = []zoneLetter{
-	{84, " "},
+	{84, "X"},
 	{72, "X"},
 	{64, "W"},
 	{56, "V"},
@@ -71,7 +71,7 @@ var zoneLetters = []zoneLetter{
 
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
-// the ``northern`` parameter instead, which is a named parameter and can be set
+// the “northern“ parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
@@ -143,7 +143,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	n := r / epSinSqrt
 	rad := (1 - e) / epSin
 
-	c := fe * pCos * pCos
+	c := eP2 * pCos * pCos
 	c2 := c * c
 
 	d := x / (n * k0)
@@ -153,8 +153,8 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	d5 := d4 * d
 	d6 := d5 * d
 
-	latitude = pRad - (pTan / rad) *
-		(d2/2 -
+	latitude = pRad - (pTan/rad)*
+		(d2/2-
 			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)) +
 		d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2)
 
@@ -226,11 +226,11 @@ func FromLatLon(latitude, longitude float64, northern bool) (easting, northing f
 		m2*math.Sin(2*latRad) +
 		m3*math.Sin(4*latRad) -
 		m4*math.Sin(6*latRad))
-	easting = k0*n * (a +
-		a3/6*(1-latTan2+c) +
+	easting = k0*n*(a+
+		a3/6*(1-latTan2+c)+
 		a5/120*(5-18*latTan2+latTan4+72*c-58*eP2)) + 500000
-	northing = k0 * (m + n*latTan * (a2/2 +
-		a4/24*(5-latTan2+9*c+4*c*c) +
+	northing = k0 * (m + n*latTan*(a2/2+
+		a4/24*(5-latTan2+9*c+4*c*c)+
 		a6/720*(61-58*latTan2+latTan4+600*c-330*eP2)))
 
 	if latitude < 0 {
@@ -255,13 +255,13 @@ func latLonToZoneNumber(latitude float64, longitude float64) int {
 	}
 
 	if 72 <= latitude && latitude <= 84 && longitude >= 0 {
-		if longitude <= 9 {
+		if longitude < 9 {
 			return 31
-		} else if longitude <= 21 {
+		} else if longitude < 21 {
 			return 33
-		} else if longitude <= 33 {
+		} else if longitude < 33 {
 			return 35
-		} else if longitude <= 42 {
+		} else if longitude < 42 {
 			return 37
 		}
 	}

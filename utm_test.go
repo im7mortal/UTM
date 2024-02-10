@@ -72,6 +72,12 @@ var knownValues = []testData{
 		testCoordinate{377486, 6296562, 30, "V"},
 		true,
 	},
+	// Latitude 84
+	{
+		testLatLon{84, -5.00601},
+		testCoordinate{476594, 9328501, 30, "X"},
+		true,
+	},
 }
 
 func TestToLatLon(t *testing.T) {
@@ -149,7 +155,7 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Latitude = i / 100
 		_, _, _, _, err := UTM.FromLatLon(latLon.Latitude, latLon.Longitude, false)
 		if err != nil {
-			t.Errorf("not cover Latitude %d", i/100)
+			t.Errorf("not cover Latitude %f", i/100)
 		}
 	}
 	latLon.Latitude = 0
@@ -157,7 +163,7 @@ func TestFromLatLonBadInput(t *testing.T) {
 		latLon.Longitude = i / 100
 		_, _, _, _, err := UTM.FromLatLon(latLon.Latitude, latLon.Longitude, false)
 		if err != nil {
-			t.Errorf("not cover Longitude %d", i/100)
+			t.Errorf("not cover Longitude %f", i/100)
 		}
 	}
 }

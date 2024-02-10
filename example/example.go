@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/im7mortal/UTM"
 	"fmt"
+	"github.com/im7mortal/UTM"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	}
 	fmt.Println(
 		fmt.Sprintf(
-			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;",
 			easting,
 			northing,
 			zoneNumber,
@@ -26,7 +26,7 @@ func main() {
 	}
 	fmt.Println(
 		fmt.Sprintf(
-			"Easting: %d; Northing: %d; ZoneNumber: %d; ZoneLetter: %s;",
+			"Easting: %f; Northing: %f; ZoneNumber: %d; ZoneLetter: %s;",
 			easting,
 			northing,
 			zoneNumber,
