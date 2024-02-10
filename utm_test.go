@@ -29,59 +29,62 @@ type testData struct {
 	northern bool
 }
 
-var knownValues = []testData{
-	// Aachen, Germany
-	{
-		testLatLon{50.77535, 6.08389},
-		testCoordinate{294409, 5628898, 32, "U"},
-		true,
-	},
-	// New York, USA
-	{
-		testLatLon{40.71435, -74.00597},
-		testCoordinate{583960, 4507523, 18, "T"},
-		true,
-	},
-	// Wellington, New Zealand
-	{
-		testLatLon{-41.28646, 174.77624},
-		testCoordinate{313784, 5427057, 60, "G"},
-		false,
-	},
-	// Capetown, South Africa
-	{
-		testLatLon{-33.92487, 18.42406},
-		testCoordinate{261878, 6243186, 34, "H"},
-		false,
-	},
-	// Mendoza, Argentina
-	{
-		testLatLon{-32.89018, -68.84405},
-		testCoordinate{514586, 6360877, 19, "H"},
-		false,
-	},
-	// Fairbanks, Alaska, USA
-	{
-		testLatLon{64.83778, -147.71639},
-		testCoordinate{466013, 7190568, 6, "W"},
-		true,
-	},
-	// Ben Nevis, Scotland, UK
-	{
-		testLatLon{56.79680, -5.00601},
-		testCoordinate{377486, 6296562, 30, "V"},
-		true,
-	},
-	// Latitude 84
-	{
-		testLatLon{84, -5.00601},
-		testCoordinate{476594, 9328501, 30, "X"},
-		true,
-	},
+func getTestValues() []testData {
+	return []testData{
+		// Aachen, Germany
+		{
+			testLatLon{50.77535, 6.08389},
+			testCoordinate{294409, 5628898, 32, "U"},
+			true,
+		},
+		// New York, USA
+		{
+			testLatLon{40.71435, -74.00597},
+			testCoordinate{583960, 4507523, 18, "T"},
+			true,
+		},
+		// Wellington, New Zealand
+		{
+			testLatLon{-41.28646, 174.77624},
+			testCoordinate{313784, 5427057, 60, "G"},
+			false,
+		},
+		// Capetown, South Africa
+		{
+			testLatLon{-33.92487, 18.42406},
+			testCoordinate{261878, 6243186, 34, "H"},
+			false,
+		},
+		// Mendoza, Argentina
+		{
+			testLatLon{-32.89018, -68.84405},
+			testCoordinate{514586, 6360877, 19, "H"},
+			false,
+		},
+		// Fairbanks, Alaska, USA
+		{
+			testLatLon{64.83778, -147.71639},
+			testCoordinate{466013, 7190568, 6, "W"},
+			true,
+		},
+		// Ben Nevis, Scotland, UK
+		{
+			testLatLon{56.79680, -5.00601},
+			testCoordinate{377486, 6296562, 30, "V"},
+			true,
+		},
+		// Latitude 84
+		{
+			testLatLon{84, -5.00601},
+			testCoordinate{476594, 9328501, 30, "X"},
+			true,
+		},
+	}
+
 }
 
 func TestToLatLon(t *testing.T) {
-	for i, data := range knownValues {
+	for i, data := range getTestValues() {
 		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, data.UTM.ZoneLetter)
 		if err != nil {
 			t.Fatal(err.Error())
@@ -97,7 +100,7 @@ func TestToLatLon(t *testing.T) {
 
 func TestToLatLonWithNorthern(t *testing.T) {
 	var emptyZoneLetter = ""
-	for i, data := range knownValues {
+	for i, data := range getTestValues() {
 		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, emptyZoneLetter, data.northern)
 		if err != nil {
 			t.Fatal(err.Error())
@@ -112,7 +115,7 @@ func TestToLatLonWithNorthern(t *testing.T) {
 }
 
 func TestFromLatLon(t *testing.T) {
-	for i, data := range knownValues {
+	for i, data := range getTestValues() {
 		easting, northing, zoneNumber, zoneLetter, err := UTM.FromLatLon(data.LatLon.Latitude, data.LatLon.Longitude, false)
 		if err != nil {
 			t.Fatal(err.Error())
@@ -132,15 +135,17 @@ func TestFromLatLon(t *testing.T) {
 	}
 }
 
-var badInputLatLon = []testLatLon{
-	{-81, 0},
-	{85, 0},
-	{0, -185},
-	{0, 185},
+func getBadInputLatLon() []testLatLon {
+	return []testLatLon{
+		{-81, 0},
+		{85, 0},
+		{0, -185},
+		{0, 185},
+	}
 }
 
 func TestFromLatLonBadInput(t *testing.T) {
-	for i, data := range badInputLatLon {
+	for i, data := range getBadInputLatLon() {
 		_, _, _, _, err := UTM.FromLatLon(data.Latitude, data.Longitude, false)
 		if err == nil {
 			t.Errorf("Expected error. badInputLatLon TestFromLatLonBadInput case %d", i)
@@ -168,28 +173,30 @@ func TestFromLatLonBadInput(t *testing.T) {
 	}
 }
 
-var badInputToLatLon = []testCoordinate{
-	// out of range ZoneLetter
-	{377486, 6296562, 30, "Y"},
-	{377486, 6296562, 30, "B"},
-	{377486, 6296562, 30, "I"},
-	{377486, 6296562, 30, "i"},
-	{377486, 6296562, 30, "O"},
-	{377486, 6296562, 30, "o"},
-	// out of range ZoneNumber
-	{377486, 6296562, 0, "V"},
-	{377486, 6296562, 61, "V"},
-	// out of range Easting
-	{1000000, 6296562, 30, "V"},
-	{99999, 6296562, 30, "V"},
-	// out of range Northing
-	{377486, 10000001, 30, "V"},
-	{377486, -1, 30, "V"},
+func getBadInputToLatLon() []testCoordinate {
+	return []testCoordinate{
+		// out of range ZoneLetter
+		{377486, 6296562, 30, "Y"},
+		{377486, 6296562, 30, "B"},
+		{377486, 6296562, 30, "I"},
+		{377486, 6296562, 30, "i"},
+		{377486, 6296562, 30, "O"},
+		{377486, 6296562, 30, "o"},
+		// out of range ZoneNumber
+		{377486, 6296562, 0, "V"},
+		{377486, 6296562, 61, "V"},
+		// out of range Easting
+		{1000000, 6296562, 30, "V"},
+		{99999, 6296562, 30, "V"},
+		// out of range Northing
+		{377486, 10000001, 30, "V"},
+		{377486, -1, 30, "V"},
+	}
 }
 
 func TestToLatLonBadInput(t *testing.T) {
 	var err error
-	for i, data := range badInputToLatLon {
+	for i, data := range getBadInputToLatLon() {
 		_, _, err = UTM.ToLatLon(data.Easting, data.Northing, data.ZoneNumber, data.ZoneLetter)
 		if err == nil {
 			t.Errorf("Expected error. badInputToLatLon TestToLatLonBadInput case %d", i)

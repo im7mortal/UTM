@@ -11,75 +11,81 @@ type testDataDeprecated struct {
 	northern bool
 }
 
-var knownValuesDeprecated = []testDataDeprecated{
-	// Aachen, Germany
-	{
-		UTM.LatLon{50.77535, 6.08389},
-		UTM.Coordinate{294409, 5628898, 32, "U"},
-		true,
-	},
-	// New York, USA
-	{
-		UTM.LatLon{40.71435, -74.00597},
-		UTM.Coordinate{583960, 4507523, 18, "T"},
-		true,
-	},
-	// Wellington, New Zealand
-	{
-		UTM.LatLon{-41.28646, 174.77624},
-		UTM.Coordinate{313784, 5427057, 60, "G"},
-		false,
-	},
-	// Capetown, South Africa
-	{
-		UTM.LatLon{-33.92487, 18.42406},
-		UTM.Coordinate{261878, 6243186, 34, "H"},
-		false,
-	},
-	// Mendoza, Argentina
-	{
-		UTM.LatLon{-32.89018, -68.84405},
-		UTM.Coordinate{514586, 6360877, 19, "H"},
-		false,
-	},
-	// Fairbanks, Alaska, USA
-	{
-		UTM.LatLon{64.83778, -147.71639},
-		UTM.Coordinate{466013, 7190568, 6, "W"},
-		true,
-	},
-	// Ben Nevis, Scotland, UK
-	{
-		UTM.LatLon{56.79680, -5.00601},
-		UTM.Coordinate{377486, 6296562, 30, "V"},
-		true,
-	},
+func getTestValuesDeprecated() []testDataDeprecated {
+	return []testDataDeprecated{
+		// Aachen, Germany
+		{
+			UTM.LatLon{50.77535, 6.08389},
+			UTM.Coordinate{294409, 5628898, 32, "U"},
+			true,
+		},
+		// New York, USA
+		{
+			UTM.LatLon{40.71435, -74.00597},
+			UTM.Coordinate{583960, 4507523, 18, "T"},
+			true,
+		},
+		// Wellington, New Zealand
+		{
+			UTM.LatLon{-41.28646, 174.77624},
+			UTM.Coordinate{313784, 5427057, 60, "G"},
+			false,
+		},
+		// Capetown, South Africa
+		{
+			UTM.LatLon{-33.92487, 18.42406},
+			UTM.Coordinate{261878, 6243186, 34, "H"},
+			false,
+		},
+		// Mendoza, Argentina
+		{
+			UTM.LatLon{-32.89018, -68.84405},
+			UTM.Coordinate{514586, 6360877, 19, "H"},
+			false,
+		},
+		// Fairbanks, Alaska, USA
+		{
+			UTM.LatLon{64.83778, -147.71639},
+			UTM.Coordinate{466013, 7190568, 6, "W"},
+			true,
+		},
+		// Ben Nevis, Scotland, UK
+		{
+			UTM.LatLon{56.79680, -5.00601},
+			UTM.Coordinate{377486, 6296562, 30, "V"},
+			true,
+		},
+	}
+
+}
+func getBadInputLatLonDeprecated() []UTM.LatLon {
+	return []UTM.LatLon{
+		{-81, 0},
+		{85, 0},
+		{0, -185},
+		{0, 185},
+	}
 }
 
-var badInputLatLonDeprecated = []UTM.LatLon{
-	{-81, 0},
-	{85, 0},
-	{0, -185},
-	{0, 185},
-}
-
-var badInputToLatLonDeprecated = []UTM.Coordinate{
-	// out of range ZoneLetter
-	{377486, 6296562, 30, "Y"},
-	{377486, 6296562, 30, "B"},
-	{377486, 6296562, 30, "I"},
-	{377486, 6296562, 30, "i"},
-	{377486, 6296562, 30, "O"},
-	{377486, 6296562, 30, "o"},
-	// out of range ZoneNumber
-	{377486, 6296562, 0, "V"},
-	{377486, 6296562, 61, "V"},
-	// out of range Easting
-	{1000000, 6296562, 30, "V"},
-	{99999, 6296562, 30, "V"},
-	// out of range Northing
-	{377486, 10000001, 30, "V"},
-	{377486, -1, 30, "V"},
+func getBadInputToLatLonDeprecated() []UTM.Coordinate {
+	return []UTM.Coordinate{
+		// out of range ZoneLetter
+		{377486, 6296562, 30, "Y"},
+		{377486, 6296562, 30, "B"},
+		{377486, 6296562, 30, "I"},
+		{377486, 6296562, 30, "i"},
+		{377486, 6296562, 30, "O"},
+		{377486, 6296562, 30, "o"},
+		// out of range ZoneNumber
+		{377486, 6296562, 0, "V"},
+		{377486, 6296562, 61, "V"},
+		// out of range Easting
+		{1000000, 6296562, 30, "V"},
+		{99999, 6296562, 30, "V"},
+		// out of range Northing
+		{377486, 10000001, 30, "V"},
+		{377486, -1, 30, "V"},
+	}
 }
 
 func TestFromLatLonBadInputF(t *testing.T) {
@@ -88,10 +94,10 @@ func TestFromLatLonBadInputF(t *testing.T) {
 		defer func() {
 			recover()
 		}()
-		UTM.FromLatLonF(badInputLatLonDeprecated[i].Latitude, badInputLatLonDeprecated[i].Longitude)
+		UTM.FromLatLonF(getBadInputLatLonDeprecated()[i].Latitude, getBadInputLatLonDeprecated()[i].Longitude)
 		t.Errorf("Expected panic. badInputLatLon TestFromLatLonBadInput case %d", i)
 	}
-	for i := range badInputLatLonDeprecated {
+	for i := range getBadInputLatLonDeprecated() {
 		suppressPanic(i)
 	}
 
@@ -121,7 +127,7 @@ func TestFromLatLonBadInputF(t *testing.T) {
 }
 
 func TestToLatLonDeprecated(t *testing.T) {
-	for i, data := range knownValuesDeprecated {
+	for i, data := range getTestValuesDeprecated() {
 		result, err := data.UTM.ToLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
@@ -136,7 +142,7 @@ func TestToLatLonDeprecated(t *testing.T) {
 }
 
 func TestToLatLonWithDeprecated(t *testing.T) {
-	for i, data := range knownValuesDeprecated {
+	for i, data := range getTestValuesDeprecated() {
 		UTMwithNorthern := UTM.Coordinate{
 			Easting:    data.UTM.Easting,
 			Northing:   data.UTM.Northing,
@@ -162,7 +168,7 @@ func TestFromLatLonF(t *testing.T) {
 		}
 	}()
 
-	for i, data := range knownValuesDeprecated {
+	for i, data := range getTestValuesDeprecated() {
 		e, n := UTM.FromLatLonF(data.LatLon.Latitude, data.LatLon.Longitude)
 		if round(data.UTM.Easting) != round(e) {
 			t.Errorf("Easting FromLatLon case %d", i)
@@ -181,7 +187,7 @@ func TestFromLatLonAndF(t *testing.T) {
 			t.Errorf("not cover longitude %s", s)
 		}
 	}()
-	for i, data := range knownValuesDeprecated {
+	for i, data := range getTestValuesDeprecated() {
 		result, err := data.LatLon.FromLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
@@ -197,7 +203,7 @@ func TestFromLatLonAndF(t *testing.T) {
 }
 func TestFromLatLonDeprecated(t *testing.T) {
 
-	for i, data := range knownValuesDeprecated {
+	for i, data := range getTestValuesDeprecated() {
 		result, err := data.LatLon.FromLatLon()
 		if err != nil {
 			t.Fatal(err.Error())
@@ -218,7 +224,7 @@ func TestFromLatLonDeprecated(t *testing.T) {
 }
 
 func TestToLatLonBadInputDeprecated(t *testing.T) {
-	for i, data := range badInputToLatLonDeprecated {
+	for i, data := range getBadInputToLatLonDeprecated() {
 		_, err := data.ToLatLon()
 		if err == nil {
 			t.Errorf("Expected error. badInputToLatLon TestToLatLonBadInput case %d", i)
