@@ -1,8 +1,9 @@
 package UTM_test
 
 import (
-	"github.com/im7mortal/UTM"
 	"testing"
+
+	"github.com/im7mortal/UTM"
 )
 
 type testDataDeprecated struct {
@@ -56,8 +57,8 @@ func getTestValuesDeprecated() []testDataDeprecated {
 			true,
 		},
 	}
-
 }
+
 func getBadInputLatLonDeprecated() []UTM.LatLon {
 	return []UTM.LatLon{
 		{-81, 0},
@@ -89,7 +90,6 @@ func getBadInputToLatLonDeprecated() []UTM.Coordinate {
 }
 
 func TestFromLatLonBadInputF(t *testing.T) {
-
 	suppressPanic := func(i int) {
 		defer func() {
 			_ = recover()
@@ -161,6 +161,7 @@ func TestToLatLonWithDeprecated(t *testing.T) {
 		}
 	}
 }
+
 func TestFromLatLonF(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -201,8 +202,8 @@ func TestFromLatLonAndF(t *testing.T) {
 		}
 	}
 }
-func TestFromLatLonDeprecated(t *testing.T) {
 
+func TestFromLatLonDeprecated(t *testing.T) {
 	for i, data := range getTestValuesDeprecated() {
 		result, err := data.LatLon.FromLatLon()
 		if err != nil {

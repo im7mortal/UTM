@@ -80,7 +80,6 @@ func getTestValues() []testData {
 			true,
 		},
 	}
-
 }
 
 func TestToLatLon(t *testing.T) {
@@ -99,7 +98,7 @@ func TestToLatLon(t *testing.T) {
 }
 
 func TestToLatLonWithNorthern(t *testing.T) {
-	var emptyZoneLetter = ""
+	emptyZoneLetter := ""
 	for i, data := range getTestValues() {
 		latitude, longitude, err := UTM.ToLatLon(data.UTM.Easting, data.UTM.Northing, data.UTM.ZoneNumber, emptyZoneLetter, data.northern)
 		if err != nil {

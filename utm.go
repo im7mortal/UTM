@@ -13,27 +13,35 @@ const (
 	r  = 6378137
 )
 
-var e2 = e * e
-var e3 = e2 * e
-var eP2 = e / (1.0 - e)
+var (
+	e2  = e * e
+	e3  = e2 * e
+	eP2 = e / (1.0 - e)
+)
 
 var sqrtE = math.Sqrt(1 - e)
 
-var fe = (1 - sqrtE) / (1 + sqrtE)
-var fe2 = fe * fe
-var fe3 = fe2 * fe
-var fe4 = fe3 * fe
-var fe5 = fe4 * fe
+var (
+	fe  = (1 - sqrtE) / (1 + sqrtE)
+	fe2 = fe * fe
+	fe3 = fe2 * fe
+	fe4 = fe3 * fe
+	fe5 = fe4 * fe
+)
 
-var m1 = 1 - e/4 - 3*e2/64 - 5*e3/256
-var m2 = 3*e/8 + 3*e2/32 + 45*e3/1024
-var m3 = 15*e2/256 + 45*e3/1024
-var m4 = 35 * e3 / 3072
+var (
+	m1 = 1 - e/4 - 3*e2/64 - 5*e3/256
+	m2 = 3*e/8 + 3*e2/32 + 45*e3/1024
+	m3 = 15*e2/256 + 45*e3/1024
+	m4 = 35 * e3 / 3072
+)
 
-var p2 = 3./2*fe - 27./32*fe3 + 269./512*fe5
-var p3 = 21./16*fe2 - 55./32*fe4
-var p4 = 151./96*fe3 - 417./128*fe5
-var p5 = 1097. / 512 * fe4
+var (
+	p2 = 3./2*fe - 27./32*fe3 + 269./512*fe5
+	p3 = 21./16*fe2 - 55./32*fe4
+	p4 = 151./96*fe3 - 417./128*fe5
+	p5 = 1097. / 512 * fe4
+)
 
 type zoneLetterT struct {
 	zone   int
@@ -75,7 +83,6 @@ var zoneLetters = []zoneLetterT{
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
 func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
-
 	northernExist := len(northern) > 0
 	zoneLetterExist := !(zoneLetter == "")
 
@@ -166,7 +173,6 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	longitude = deg(longitude) + float64(zoneNumberToCentralLongitude(zoneNumber))
 
 	return
-
 }
 
 // ValidateLatLone check that latitude and longitude are valid.

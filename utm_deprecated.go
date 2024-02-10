@@ -49,8 +49,6 @@ type LatLon struct {
 //
 // Deprecated: Use ToLatLon functions to convert LatLon instead.
 func (coordinate *Coordinate) ToLatLon(northern ...bool) (LatLon, error) {
-
 	latitude, longitude, err := ToLatLon(coordinate.Easting, coordinate.Northing, coordinate.ZoneNumber, coordinate.ZoneLetter, northern...)
 	return LatLon{latitude, longitude}, err
-
 }
