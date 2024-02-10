@@ -35,17 +35,17 @@ var p3 = 21./16*fe2 - 55./32*fe4
 var p4 = 151./96*fe3 - 417./128*fe5
 var p5 = 1097. / 512 * fe4
 
-type zoneLetter struct {
+type zoneLetterT struct {
 	zone   int
 	letter string
 }
 
-const x = math.Pi / 180
+const xr = math.Pi / 180
 
-func rad(d float64) float64 { return d * x }
-func deg(r float64) float64 { return r / x }
+func rad(d float64) float64 { return d * xr }
+func deg(r float64) float64 { return r / xr }
 
-var zoneLetters = []zoneLetter{
+var zoneLetters = []zoneLetterT{
 	{84, "X"},
 	{72, "X"},
 	{64, "W"},
@@ -102,12 +102,12 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	var northernValue bool
 
 	if zoneLetterExist {
-		zoneLetter := unicode.ToUpper(rune(zoneLetter[0]))
-		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
+		zoneLetterRune := unicode.ToUpper(rune(zoneLetter[0]))
+		if !('C' <= zoneLetterRune && zoneLetterRune <= 'X') || zoneLetterRune == 'I' || zoneLetterRune == 'O' {
 			err = inputError("zone letter out of range (must be between C and X)")
 			return
 		}
-		northernValue = zoneLetter >= 'N'
+		northernValue = zoneLetterRune >= 'N'
 	} else {
 		northernValue = northern[0]
 	}
@@ -141,7 +141,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	epSinSqrt := math.Sqrt(1 - e*pSin2)
 
 	n := r / epSinSqrt
-	rad := (1 - e) / epSin
+	rad_ := (1 - e) / epSin
 
 	c := eP2 * pCos * pCos
 	c2 := c * c
@@ -153,7 +153,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	d5 := d4 * d
 	d6 := d5 * d
 
-	latitude = pRad - (pTan/rad)*
+	latitude = pRad - (pTan/rad_)*
 		(d2/2-
 			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)) +
 		d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2)
