@@ -46,7 +46,7 @@ func rad(d float64) float64 { return d * x }
 func deg(r float64) float64 { return r / x }
 
 var zoneLetters = []zoneLetter{
-	{84, " "},
+	{84, "X"},
 	{72, "X"},
 	{64, "W"},
 	{56, "V"},
