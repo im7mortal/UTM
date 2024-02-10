@@ -110,13 +110,9 @@ func TestFromLatLonBadInputF(t *testing.T) {
 		}
 	}()
 
-	longitude := 0.
-
-	latitude := 0.
-
 	for i := -8000.0; i < 8401.0; i++ {
-		latitude = i / 100
-		UTM.FromLatLonF(latitude, longitude)
+		latitude := i / 100
+		UTM.FromLatLonF(latitude, 0)
 	}
 
 	defer func() {
@@ -125,11 +121,9 @@ func TestFromLatLonBadInputF(t *testing.T) {
 		}
 	}()
 
-	latitude = 0.
-
 	for i := -18000.0; i < 18001.0; i++ {
-		longitude = i / 100
-		UTM.FromLatLonF(latitude, longitude)
+		longitude := i / 100
+		UTM.FromLatLonF(0, longitude)
 	}
 }
 
