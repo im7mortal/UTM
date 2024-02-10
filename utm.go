@@ -180,7 +180,7 @@ func ValidateLatLone(latitude, longitude float64) error {
 	return nil
 }
 
-// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
+// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates.
 func FromLatLon(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
 	// check that latitude and longitude are valid
 	err = ValidateLatLone(latitude, longitude)

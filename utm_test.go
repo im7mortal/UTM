@@ -9,7 +9,7 @@ import (
 
 func round(f float64) float64 { return math.Floor(f + .5) }
 
-// emulation for test only
+// emulation for test only.
 type testLatLon struct {
 	Latitude  float64
 	Longitude float64

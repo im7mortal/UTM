@@ -179,7 +179,7 @@ func TestFromLatLonF(t *testing.T) {
 	}
 }
 
-// LatLon.FromLatLon and FromLatLon must calculate the same easting and northing
+// LatLon.FromLatLon and FromLatLon must calculate the same easting and northing.
 func TestFromLatLonAndF(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
