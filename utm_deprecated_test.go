@@ -1,8 +1,8 @@
 package UTM_test
 
 import (
-	"testing"
 	"github.com/im7mortal/UTM"
+	"testing"
 )
 
 type testDataDeprecated struct {

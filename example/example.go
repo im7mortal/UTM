@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/im7mortal/UTM"
 	"fmt"
+	"github.com/im7mortal/UTM"
 )
 
 func main() {
