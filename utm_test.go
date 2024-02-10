@@ -72,6 +72,12 @@ var knownValues = []testData{
 		testCoordinate{377486, 6296562, 30, "V"},
 		true,
 	},
+	// Latitude 84
+	{
+		testLatLon{84, -5.00601},
+		testCoordinate{476594, 9328501, 30, "X"},
+		true,
+	},
 }
 
 func TestToLatLon(t *testing.T) {
