@@ -92,7 +92,7 @@ func TestFromLatLonBadInputF(t *testing.T) {
 
 	suppressPanic := func(i int) {
 		defer func() {
-			recover()
+			_ = recover()
 		}()
 		UTM.FromLatLonF(getBadInputLatLonDeprecated()[i].Latitude, getBadInputLatLonDeprecated()[i].Longitude)
 		t.Errorf("Expected panic. badInputLatLon TestFromLatLonBadInput case %d", i)
