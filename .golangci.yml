@@ -1,0 +1,33 @@
+linters:
+  enable-all: true
+  disable:
+    # annoying
+    - forbidigo
+    - gci
+    - varnamelen
+    - gomnd
+    - funlen
+    - gochecknoglobals
+    - exhaustruct
+    - depguard
+    - wsl
+    - revive
+    - stylecheck
+    # for V2
+    - errorlint
+    - goerr113
+    - nonamedreturns
+    - nlreturn
+    - nakedret
+    - ireturn
+    # deprecated
+    - scopelint
+    - interfacer
+    - varcheck
+    - golint
+    - structcheck
+    - exhaustivestruct
+    - nosnakecase
+    - maligned
+    - ifshort
+    - deadcode

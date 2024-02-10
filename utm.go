@@ -13,39 +13,47 @@ const (
 	r  = 6378137
 )
 
-var e2 = e * e
-var e3 = e2 * e
-var eP2 = e / (1.0 - e)
+var (
+	e2  = e * e
+	e3  = e2 * e
+	eP2 = e / (1.0 - e)
+)
 
 var sqrtE = math.Sqrt(1 - e)
 
-var fe = (1 - sqrtE) / (1 + sqrtE)
-var fe2 = fe * fe
-var fe3 = fe2 * fe
-var fe4 = fe3 * fe
-var fe5 = fe4 * fe
+var (
+	fe  = (1 - sqrtE) / (1 + sqrtE)
+	fe2 = fe * fe
+	fe3 = fe2 * fe
+	fe4 = fe3 * fe
+	fe5 = fe4 * fe
+)
 
-var m1 = 1 - e/4 - 3*e2/64 - 5*e3/256
-var m2 = 3*e/8 + 3*e2/32 + 45*e3/1024
-var m3 = 15*e2/256 + 45*e3/1024
-var m4 = 35 * e3 / 3072
+var (
+	m1 = 1 - e/4 - 3*e2/64 - 5*e3/256
+	m2 = 3*e/8 + 3*e2/32 + 45*e3/1024
+	m3 = 15*e2/256 + 45*e3/1024
+	m4 = 35 * e3 / 3072
+)
 
-var p2 = 3./2*fe - 27./32*fe3 + 269./512*fe5
-var p3 = 21./16*fe2 - 55./32*fe4
-var p4 = 151./96*fe3 - 417./128*fe5
-var p5 = 1097. / 512 * fe4
+var (
+	p2 = 3./2*fe - 27./32*fe3 + 269./512*fe5
+	p3 = 21./16*fe2 - 55./32*fe4
+	p4 = 151./96*fe3 - 417./128*fe5
+	p5 = 1097. / 512 * fe4
+)
 
-type zoneLetter struct {
+type zoneLetterT struct {
 	zone   int
 	letter string
 }
 
-const x = math.Pi / 180
+const xr = math.Pi / 180
 
-func rad(d float64) float64 { return d * x }
-func deg(r float64) float64 { return r / x }
+func rad(d float64) float64 { return d * xr }
+func deg(r float64) float64 { return r / xr }
 
-var zoneLetters = []zoneLetter{
+var zoneLetters = []zoneLetterT{
 	{84, "X"},
 	{72, "X"},
 	{64, "W"},
@@ -71,11 +79,16 @@ var zoneLetters = []zoneLetter{
 
 // ToLatLon convert Universal Transverse Mercator coordinates to a latitude and longitude
 // Since the zone letter is not strictly needed for the conversion you may also
-// the “northern“ parameter instead, which is a named parameter and can be set
+// the "northern" parameter instead, which is a named parameter and can be set
 // to either true or false. In this case you should define fields clearly
 // You can't set ZoneLetter or northern both.
-func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, northern ...bool) (latitude, longitude float64, err error) {
-
+func ToLatLon(
+	easting, northing float64,
+	zoneNumber int,
+	zoneLetter string,
+	northern ...bool) (
+	latitude, longitude float64, err error,
+) {
 	northernExist := len(northern) > 0
 	zoneLetterExist := !(zoneLetter == "")
 
@@ -86,14 +99,17 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 		err = inputError("set either ZoneLetter or northern, but not both")
 		return
 	}
+
 	if !(100000 <= easting && easting < 1000000) {
 		err = inputError("easting out of range (must be between 100.000 m and 999.999 m")
 		return
 	}
+
 	if !(0 <= northing && northing <= 10000000) {
 		err = inputError("northing out of range (must be between 0 m and 10.000.000 m)")
 		return
 	}
+
 	if !(1 <= zoneNumber && zoneNumber <= 60) {
 		err = inputError("zone number out of range (must be between 1 and 60)")
 		return
@@ -102,12 +118,12 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	var northernValue bool
 
 	if zoneLetterExist {
-		zoneLetter := unicode.ToUpper(rune(zoneLetter[0]))
-		if !('C' <= zoneLetter && zoneLetter <= 'X') || zoneLetter == 'I' || zoneLetter == 'O' {
+		zoneLetterRune := unicode.ToUpper(rune(zoneLetter[0]))
+		if !('C' <= zoneLetterRune && zoneLetterRune <= 'X') || zoneLetterRune == 'I' || zoneLetterRune == 'O' {
 			err = inputError("zone letter out of range (must be between C and X)")
 			return
 		}
-		northernValue = zoneLetter >= 'N'
+		northernValue = zoneLetterRune >= 'N'
 	} else {
 		northernValue = northern[0]
 	}
@@ -141,7 +157,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	epSinSqrt := math.Sqrt(1 - e*pSin2)
 
 	n := r / epSinSqrt
-	rad := (1 - e) / epSin
+	rad_ := (1 - e) / epSin
 
 	c := eP2 * pCos * pCos
 	c2 := c * c
@@ -153,7 +169,7 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	d5 := d4 * d
 	d6 := d5 * d
 
-	latitude = pRad - (pTan/rad)*
+	latitude = pRad - (pTan/rad_)*
 		(d2/2-
 			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)) +
 		d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2)
@@ -166,7 +182,6 @@ func ToLatLon(easting, northing float64, zoneNumber int, zoneLetter string, nort
 	longitude = deg(longitude) + float64(zoneNumberToCentralLongitude(zoneNumber))
 
 	return
-
 }
 
 // ValidateLatLone check that latitude and longitude are valid.
@@ -180,8 +195,10 @@ func ValidateLatLone(latitude, longitude float64) error {
 	return nil
 }
 
-// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates
-func FromLatLon(latitude, longitude float64, northern bool) (easting, northing float64, zoneNumber int, zoneLetter string, err error) {
+// FromLatLon convert a latitude and longitude to Universal Transverse Mercator coordinates.
+func FromLatLon(latitude, longitude float64, northern bool) (
+	easting, northing float64, zoneNumber int, zoneLetter string, err error,
+) {
 	// check that latitude and longitude are valid
 	err = ValidateLatLone(latitude, longitude)
 	if err != nil {
@@ -255,13 +272,14 @@ func latLonToZoneNumber(latitude float64, longitude float64) int {
 	}
 
 	if 72 <= latitude && latitude <= 84 && longitude >= 0 {
-		if longitude < 9 {
+		switch {
+		case longitude < 9:
 			return 31
-		} else if longitude < 21 {
+		case longitude < 21:
 			return 33
-		} else if longitude < 33 {
+		case longitude < 33:
 			return 35
-		} else if longitude < 42 {
+		case longitude < 42:
 			return 37
 		}
 	}
