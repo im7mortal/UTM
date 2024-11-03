@@ -171,8 +171,8 @@ func ToLatLon(
 
 	latitude = pRad - (pTan/rad_)*
 		(d2/2-
-			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)) +
-		d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2)
+			d4/24*(5+3*pTan2+10*c-4*c2-9*eP2)+
+			d6/720*(61+90*pTan2+298*c+45*pTan4-252*eP2-3*c2))
 
 	longitude = (d -
 		d3/6*(1+2*pTan2+c) +
