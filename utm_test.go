@@ -274,3 +274,85 @@ func TestToLatLonBadInput(t *testing.T) {
 		}
 	}
 }
+
+// TestFromLatLonAntimeridianZoneWrap guards the antimeridian boundary: lon == 180
+// must map to zone 1 (wrap), not the out-of-range zone 61, matching the Python
+// `utm` reference. Both the equator and the Svalbard (72-84N) band are covered.
+// northern=false is used so the natural MGRS zone letter is returned.
+func TestFromLatLonAntimeridianZoneWrap(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name                string
+		lat, lon            float64
+		wantZone            int
+		wantLetter          string
+		wantRoundTripErrNil bool
+	}{
+		{"equator_lon180", 0.0, 180.0, 1, "N", true},
+		{"svalbard_lon180", 80.0, 180.0, 1, "X", true},
+		{"equator_lon_neg180", 0.0, -180.0, 1, "N", true},
+		{"equator_lon179.99", 0.0, 179.99, 60, "N", true},
+	}
+
+	for _, c := range cases {
+		easting, northing, zone, letter, err := UTM.FromLatLon(c.lat, c.lon, false)
+		if err != nil {
+			t.Fatalf("%s: FromLatLon returned unexpected error: %v", c.name, err)
+		}
+		if zone != c.wantZone {
+			t.Errorf("%s: zone = %d, want %d", c.name, zone, c.wantZone)
+		}
+		if letter != c.wantLetter {
+			t.Errorf("%s: letter = %q, want %q", c.name, letter, c.wantLetter)
+		}
+		if !(1 <= zone && zone <= 60) {
+			t.Errorf("%s: zone %d out of valid range [1,60]", c.name, zone)
+		}
+		// Forward output must round-trip through the library's own ToLatLon.
+		_, _, rtErr := UTM.ToLatLon(easting, northing, zone, letter)
+		if c.wantRoundTripErrNil && rtErr != nil {
+			t.Errorf("%s: ToLatLon round-trip failed on forward output (zone=%d): %v",
+				c.name, zone, rtErr)
+		}
+	}
+}
+
+// TestFromLatLonNorwayLat64Boundary guards the Norway zone-32V extension boundary.
+// MGRS band V is half-open [56, 64); at lat == 64 (band W) the extension does NOT
+// apply and the default zone (31 for lon in [3, 6)) is correct. lat == 63.99 stays
+// in band V and keeps zone 32. The projected easting at (64, 3) is zone 31's central
+// meridian (3E), so easting ~= 500000 m, matching pyproj EPSG:32631.
+func TestFromLatLonNorwayLat64Boundary(t *testing.T) {
+	t.Parallel()
+
+	// (64, 3): band W, default zone 31, easting near 500000 (central meridian 3E).
+	e, n, zone, letter, err := UTM.FromLatLon(64.0, 3.0, false)
+	if err != nil {
+		t.Fatalf("FromLatLon(64,3) returned unexpected error: %v", err)
+	}
+	if zone != 31 {
+		t.Errorf("FromLatLon(64,3) zone = %d, want 31 (band W, no Norway extension)", zone)
+	}
+	if letter != "W" {
+		t.Errorf("FromLatLon(64,3) letter = %q, want \"W\"", letter)
+	}
+	if math.Abs(e-500000) > 1.0 {
+		t.Errorf("FromLatLon(64,3) easting = %.4f, want ~500000 (pyproj EPSG:32631)", e)
+	}
+	if math.Abs(n-7097014.16) > 1.0 {
+		t.Errorf("FromLatLon(64,3) northing = %.4f, want ~7097014.16 (pyproj EPSG:32631)", n)
+	}
+
+	// (63.99, 3): still band V, Norway extension applies -> zone 32.
+	_, _, zone2, letter2, err2 := UTM.FromLatLon(63.99, 3.0, false)
+	if err2 != nil {
+		t.Fatalf("FromLatLon(63.99,3) returned unexpected error: %v", err2)
+	}
+	if zone2 != 32 {
+		t.Errorf("FromLatLon(63.99,3) zone = %d, want 32 (band V, Norway extension)", zone2)
+	}
+	if letter2 != "V" {
+		t.Errorf("FromLatLon(63.99,3) letter = %q, want \"V\"", letter2)
+	}
+}
