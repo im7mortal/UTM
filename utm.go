@@ -205,6 +205,14 @@ func FromLatLon(latitude, longitude float64, northern bool) (
 		return
 	}
 
+	// Normalize longitude to [-180, 180) so the antimeridian lon == 180 wraps to
+	// -180, matching the Python `utm` reference this library is a port of. This
+	// keeps the forward projection's angular offset from the zone central
+	// meridian within one zone width (the raw 357deg offset of lon == 180 against
+	// zone 1's -177deg central meridian would otherwise push the easting series
+	// out of range and break the forward->inverse round-trip).
+	longitude = math.Mod(longitude+540, 360) - 180
+
 	latRad := rad(latitude)
 	latSin := math.Sin(latRad)
 	latCos := math.Cos(latRad)
@@ -267,7 +275,14 @@ func latitudeToZoneLetter(latitude float64) string {
 }
 
 func latLonToZoneNumber(latitude float64, longitude float64) int {
-	if 56 <= latitude && latitude <= 64 && 3 <= longitude && longitude <= 12 {
+	// Normalize longitude to [-180, 180), matching the Python `utm` reference
+	// (the library this is a port of): lon == 180 wraps to -180 (zone 1) instead
+	// of the out-of-range zone 61.
+	longitude = math.Mod(longitude+540, 360) - 180
+
+	// MGRS band V is half-open [56, 64); at lat == 64 (band W) the Norway
+	// zone-32V western extension does not apply, so use latitude < 64.
+	if 56 <= latitude && latitude < 64 && 3 <= longitude && longitude <= 12 {
 		return 32
 	}
 
@@ -281,6 +296,10 @@ func latLonToZoneNumber(latitude float64, longitude float64) int {
 			return 35
 		case longitude < 42:
 			return 37
+		default:
+			// longitude >= 42 in the 72-84N band: fall back to the standard
+			// zone formula below (with longitude normalized, lon == 180 -> -180
+			// -> zone 1, not 61).
 		}
 	}
 
