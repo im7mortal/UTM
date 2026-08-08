@@ -1,0 +1,49 @@
+{
+  "name": "UTM Go Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": false,
+  "mounts": [
+    "source=utm-go-pkg-cache,target=/go/pkg,type=volume",
+    "source=utm-go-build-cache,target=/home/vscode/.cache/go-build,type=volume"
+  ],
+  "customizations": {
+    "jetbrains": {
+      "settings": {
+        "com.intellij:app:HttpConfigurable.use_proxy_pac": true,
+        "com.intellij:app:VcsApplicationSettings.show_editor_preview_on_double_click": false
+      }
+    },
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "eamodio.gitlens",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "go.useLanguageServer": true,
+        "go.lintTool": "golangci-lint",
+        "go.formatTool": "gofmt",
+        "go.testFlags": [
+          "-v"
+        ],
+        "editor.formatOnSave": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true
+      }
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh && bash .devcontainer/setup-git.sh"
+}
+
+
+
+
