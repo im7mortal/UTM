@@ -7,6 +7,7 @@ ARG USER_GID=1000
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
+    curl \
     git \
     sudo \
   && groupadd --gid "${USER_GID}" "${USERNAME}" \
@@ -16,6 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
   && chmod 440 /etc/sudoers.d/${USERNAME} \
   && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh \
+    | sh -s -- -b /usr/local/bin v2.1.6
 
 ENV GOPATH=/go
 ENV PATH=${GOPATH}/bin:/usr/local/go/bin:${PATH}
